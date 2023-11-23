@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace Blog.Infrastructure.Identity.Authentication;
 
-public sealed class ConfigureJwtOptions : IConfigureOptions<JwtOptions>
+internal sealed class ConfigureJwtOptions : IConfigureOptions<JwtOptions>
 {
     private const string SectionName = "JWTOptions";
     private readonly IConfiguration _configuration;

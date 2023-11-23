@@ -5,7 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Blog.Infrastructure.Identity.Authentication;
 
-public sealed class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions>
+internal sealed class ConfigureJwtBearerOptions : IConfigureNamedOptions<JwtBearerOptions>
 {
     private readonly JwtOptions _jwtOptions;
 

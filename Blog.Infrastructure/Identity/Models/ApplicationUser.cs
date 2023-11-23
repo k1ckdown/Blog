@@ -1,3 +1,4 @@
+using Blog.Application.DTOs.Account;
 using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Infrastructure.Identity.Models;

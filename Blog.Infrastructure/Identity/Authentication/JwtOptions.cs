@@ -1,6 +1,6 @@
 namespace Blog.Infrastructure.Identity.Authentication;
 
-public sealed class JwtOptions
+internal sealed class JwtOptions
 {
     public string Key { get; set; }
     public string Issuer { get; set; }
