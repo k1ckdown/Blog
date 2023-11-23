@@ -4,7 +4,7 @@ using Blog.Infrastructure.Identity.Authentication;
 using Blog.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace Blog.Infrastructure.Persistence;
+namespace Blog.Infrastructure.Identity.Services;
 
 internal sealed class AccountService
 {
@@ -20,6 +20,25 @@ internal sealed class AccountService
         _jwtProvider = jwtProvider;
         _userManager = userManager;
         _signInManager = signInManager;
+    }
+    
+    public async Task<TokenResponse> Login(LoginCredentials credentials)
+    {
+        var user = await _userManager.FindByEmailAsync(credentials.Email);
+
+        if (user == null)
+        {
+            throw new AuthenticationException();
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(user, credentials.Password, false, false);
+
+        if (result.Succeeded)
+        {
+            return new TokenResponse { Token = _jwtProvider.Generate(user) };
+        }
+
+        throw new AuthenticationException();
     }
 
     public async Task<TokenResponse> Register(UserRegisterModel registerModel)
