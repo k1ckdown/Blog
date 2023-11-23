@@ -1,4 +1,5 @@
 using System.Security.Authentication;
+using Blog.Application.Common.Interfaces.Services;
 using Blog.Application.DTOs.Account;
 using Blog.Domain.Entities;
 using Blog.Infrastructure.Identity.Authentication;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Infrastructure.Identity.Services;
 
-internal sealed class AccountService
+internal sealed class AccountService : IAccountService
 {
     private readonly JwtProvider _jwtProvider;
     private readonly UserManager<IdentityUser> _userManager;
@@ -22,12 +23,12 @@ internal sealed class AccountService
         _signInManager = signInManager;
     }
 
-    public async Task Logout()
+    public async Task LogOut()
     {
         await _signInManager.SignOutAsync();
     }
     
-    public async Task<TokenResponse> Login(LoginCredentials credentials)
+    public async Task<TokenResponse> LogIn(LoginCredentials credentials)
     {
         var identityUser = await _userManager.FindByEmailAsync(credentials.Email);
 
