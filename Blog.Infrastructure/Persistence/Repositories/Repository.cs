@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Blog.Infrastructure.Persistence.Repositories;
 
-public sealed class Repository<T> : IRepository<T> where T : class, IEntity
+public class Repository<T> : IRepository<T> where T : class, IEntity
 {
     private readonly ApplicationDbContext _dbContext;
 

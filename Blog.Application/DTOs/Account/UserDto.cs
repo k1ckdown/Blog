@@ -1,8 +1,9 @@
+using Blog.Application.Common.Mappings;
 using Blog.Domain.Entities;
 
 namespace Blog.Application.DTOs.Account;
 
-public sealed class UserDto
+public sealed class UserDto : IMapFrom<User>
 {
     public Guid Id { get; set; }
     public DateTime CreateTime { get; set; }
