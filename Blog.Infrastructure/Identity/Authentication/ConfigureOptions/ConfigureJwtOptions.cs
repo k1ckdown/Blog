@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Blog.Infrastructure.Identity.Authentication;
+namespace Blog.Infrastructure.Identity.Authentication.ConfigureOptions;
 
 internal sealed class ConfigureJwtOptions : IConfigureOptions<JwtOptions>
 {
