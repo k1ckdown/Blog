@@ -21,6 +21,11 @@ internal sealed class AccountService
         _userManager = userManager;
         _signInManager = signInManager;
     }
+
+    public async Task Logout()
+    {
+        await _signInManager.SignOutAsync();
+    }
     
     public async Task<TokenResponse> Login(LoginCredentials credentials)
     {
