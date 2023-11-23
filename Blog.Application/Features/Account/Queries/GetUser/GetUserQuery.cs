@@ -1,6 +1,6 @@
 using Blog.Application.DTOs.Account;
 using MediatR;
 
-namespace Blog.Application.Features.User.Queries.GetUser;
+namespace Blog.Application.Features.Account.Queries.GetUser;
 
-public record struct GetUserQuery(Guid UserId) : IRequest<UserDto>;
+public sealed record GetUserQuery(Guid UserId) : IRequest<UserDto>;

@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Blog.Application.Features.Account.Commands.Login;
 
-public record struct LoginCommand(LoginCredentials Credentials) : IRequest<TokenResponse>;
+public sealed record LoginCommand(LoginCredentials Credentials) : IRequest<TokenResponse>;

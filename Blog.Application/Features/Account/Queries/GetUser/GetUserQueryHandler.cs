@@ -3,7 +3,7 @@ using Blog.Application.DTOs.Account;
 using Blog.Application.Interfaces.Repositories;
 using MediatR;
 
-namespace Blog.Application.Features.User.Queries.GetUser;
+namespace Blog.Application.Features.Account.Queries.GetUser;
 
 public sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto>
 {
