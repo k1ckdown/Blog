@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Blog.Domain.Entities;
 
 namespace Blog.Application.DTOs.Account;
 
@@ -23,10 +24,4 @@ public sealed class UserRegisterModel
     
     [Phone]
     public string PhoneNumber { get; set; }
-}
-
-public enum Gender
-{
-    Male,
-    Female
 }

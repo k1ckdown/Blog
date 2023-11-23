@@ -1,7 +1,7 @@
 using System.Security.Authentication;
 using Blog.Application.DTOs.Account;
+using Blog.Domain.Entities;
 using Blog.Infrastructure.Identity.Authentication;
-using Blog.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Infrastructure.Identity.Services;
@@ -9,13 +9,13 @@ namespace Blog.Infrastructure.Identity.Services;
 internal sealed class AccountService
 {
     private readonly JwtProvider _jwtProvider;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<IdentityUser> _signInManager;
 
     public AccountService(
         JwtProvider jwtProvider,
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager)
+        UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager)
     {
         _jwtProvider = jwtProvider;
         _userManager = userManager;
@@ -29,48 +29,45 @@ internal sealed class AccountService
     
     public async Task<TokenResponse> Login(LoginCredentials credentials)
     {
-        var user = await _userManager.FindByEmailAsync(credentials.Email);
+        var identityUser = await _userManager.FindByEmailAsync(credentials.Email);
 
-        if (user == null)
+        if (identityUser == null)
         {
             throw new AuthenticationException();
         }
 
-        var result = await _signInManager.PasswordSignInAsync(user, credentials.Password, false, false);
+        var result = await _signInManager.PasswordSignInAsync(identityUser, credentials.Password, false, false);
 
         if (result.Succeeded)
         {
-            return new TokenResponse { Token = _jwtProvider.Generate(user) };
+            return new TokenResponse { Token = _jwtProvider.Generate(identityUser) };
         }
 
         throw new AuthenticationException();
     }
 
-    public async Task<TokenResponse> Register(UserRegisterModel registerModel)
+    public async Task<TokenResponse> Register(User user, string password)
     {
-        var userExists = await _userManager.FindByEmailAsync(registerModel.Email);
+        var userExists = await _userManager.FindByEmailAsync(user.Email);
 
         if (userExists != null)
         {
             throw new AuthenticationException();
         }
-
-        var user = new ApplicationUser
+        
+        var identityUser = new IdentityUser
         {
-            FullName = registerModel.FullName,
-            UserName = registerModel.Email,
-            Email = registerModel.Email,
-            BirthDate = registerModel.BirthDate,
-            PhoneNumber = registerModel.PhoneNumber,
-            Gender = registerModel.Gender,
-            CreateTime = DateTime.UtcNow
+            Id = user.Id.ToString(),
+            UserName = user.Email,
+            Email = user.Email,
+            PhoneNumber = user.PhoneNumber,
         };
 
-        var result = await _userManager.CreateAsync(user, registerModel.Password);
+        var result = await _userManager.CreateAsync(identityUser, password);
 
         if (result.Succeeded)
         {
-            return new TokenResponse { Token = _jwtProvider.Generate(user) };
+            return new TokenResponse { Token = _jwtProvider.Generate(identityUser) };
         }
 
         throw new AuthenticationException();

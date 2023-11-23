@@ -16,4 +16,8 @@
       <ProjectReference Include="..\Blog.Application\Blog.Application.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Persistence\Repositories\" />
+    </ItemGroup>
+
 </Project>
