@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
+using Blog.Infrastructure.Identity.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,11 +14,11 @@ internal sealed class JwtProvider
     public JwtProvider(IOptions<JwtOptions> jwtOptions) =>
         _jwtOptions = jwtOptions.Value;
 
-    public string Generate(IdentityUser user)
+    public string Generate(ApplicationUser user)
     {
         var claims = new Claim[]
         {
-            new (JwtRegisteredClaimNames.Sub, user.Id),
+            new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new (JwtRegisteredClaimNames.Email, user.Email ?? ""),
             new (JwtRegisteredClaimNames.Jti, new Guid().ToString()),
         };

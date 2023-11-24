@@ -19,8 +19,11 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, To
 
     public async Task<TokenResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        var (tokenResponse, userId) = await _accountService.Register(request.RegisterModel);
+        
         var user = new User
         {
+            Id = userId,
             CreateTime = DateTime.UtcNow,
             Email = request.RegisterModel.Email,
             Gender = request.RegisterModel.Gender,
@@ -28,10 +31,8 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, To
             BirthDate = request.RegisterModel.BirthDate,
             PhoneNumber = request.RegisterModel.PhoneNumber
         };
-        
-        var tokenResponse = await _accountService.Register(user, request.RegisterModel.Password);
         await _userRepository.AddAsync(user);
-
+        
         return tokenResponse;
     }
 }

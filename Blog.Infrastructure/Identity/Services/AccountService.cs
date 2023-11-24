@@ -1,8 +1,8 @@
 using System.Security.Authentication;
 using Blog.Application.Common.Interfaces.Services;
 using Blog.Application.DTOs.Account;
-using Blog.Domain.Entities;
 using Blog.Infrastructure.Identity.Authentication;
+using Blog.Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Blog.Infrastructure.Identity.Services;
@@ -10,13 +10,13 @@ namespace Blog.Infrastructure.Identity.Services;
 internal sealed class AccountService : IAccountService
 {
     private readonly JwtProvider _jwtProvider;
-    private readonly UserManager<IdentityUser> _userManager;
-    private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
 
     public AccountService(
         JwtProvider jwtProvider,
-        UserManager<IdentityUser> userManager,
-        SignInManager<IdentityUser> signInManager)
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
         _jwtProvider = jwtProvider;
         _userManager = userManager;
@@ -47,28 +47,27 @@ internal sealed class AccountService : IAccountService
         throw new AuthenticationException();
     }
 
-    public async Task<TokenResponse> Register(User user, string password)
+    public async Task<(TokenResponse, Guid)> Register(UserRegisterModel registerModel)
     {
-        var userExists = await _userManager.FindByEmailAsync(user.Email);
+        var userExists = await _userManager.FindByEmailAsync(registerModel.Email);
 
         if (userExists != null)
         {
             throw new AuthenticationException();
         }
         
-        var identityUser = new IdentityUser
+        var identityUser = new ApplicationUser
         {
-            Id = user.Id.ToString(),
-            UserName = user.Email,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
+            UserName = registerModel.Email,
+            Email = registerModel.Email,
+            PhoneNumber = registerModel.PhoneNumber,
         };
 
-        var result = await _userManager.CreateAsync(identityUser, password);
+        var result = await _userManager.CreateAsync(identityUser, registerModel.Password);
 
         if (result.Succeeded)
         {
-            return new TokenResponse { Token = _jwtProvider.Generate(identityUser) };
+            return (new TokenResponse { Token = _jwtProvider.Generate(identityUser) }, identityUser.Id);
         }
 
         throw new AuthenticationException();

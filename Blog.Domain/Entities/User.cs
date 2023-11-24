@@ -4,7 +4,7 @@ namespace Blog.Domain.Entities;
 
 public sealed class User : IEntity
 {
-    public Guid Id { get; }
+    public Guid Id { get; set; }
     public DateTime CreateTime { get; set; }
     public string FullName { get; set; }
     public DateTime BirthDate { get; set; }
