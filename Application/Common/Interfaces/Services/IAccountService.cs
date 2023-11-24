@@ -1,4 +1,5 @@
 using Application.DTOs.Account;
+using Application.Wrappers;
 
 namespace Application.Common.Interfaces.Services;
 

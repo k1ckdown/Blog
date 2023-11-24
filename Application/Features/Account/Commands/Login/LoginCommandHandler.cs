@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Services;
-using Application.DTOs.Account;
+using Application.Wrappers;
 using MediatR;
 
 namespace Application.Features.Account.Commands.Login;

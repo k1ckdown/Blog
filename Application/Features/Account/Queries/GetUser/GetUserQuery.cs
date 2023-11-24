@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Application.Features.Account.Queries.GetUser;
 
-public sealed record GetUserQuery(Guid UserId) : IRequest<UserDto>;
+public sealed record GetUserQuery(Guid Id) : IRequest<UserDto>;

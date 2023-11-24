@@ -1,6 +1,8 @@
 using System.Security.Authentication;
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Services;
 using Application.DTOs.Account;
+using Application.Wrappers;
 using Infrastructure.Identity.Authentication;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -34,17 +36,17 @@ internal sealed class AccountService : IAccountService
 
         if (identityUser == null)
         {
-            throw new AuthenticationException();
+            throw new InvalidCredentialException($"No accounts registered with {credentials.Email}.");
         }
 
         var result = await _signInManager.PasswordSignInAsync(identityUser, credentials.Password, false, false);
 
         if (result.Succeeded)
         {
-            return new TokenResponse { Token = _jwtProvider.Generate(identityUser) };
+            return new TokenResponse(_jwtProvider.Generate(identityUser));
         }
 
-        throw new AuthenticationException();
+        throw new InvalidCredentialException($"Invalid credentials for {credentials.Email}.");
     }
 
     public async Task<(TokenResponse, Guid)> Register(UserRegisterModel registerModel)
@@ -53,7 +55,7 @@ internal sealed class AccountService : IAccountService
 
         if (userExists != null)
         {
-            throw new AuthenticationException();
+            throw new BadRequestException($"User with {registerModel.Email} already exists");
         }
         
         var identityUser = new ApplicationUser
@@ -67,9 +69,9 @@ internal sealed class AccountService : IAccountService
 
         if (result.Succeeded)
         {
-            return (new TokenResponse { Token = _jwtProvider.Generate(identityUser) }, identityUser.Id);
+            return (new TokenResponse(_jwtProvider.Generate(identityUser)), identityUser.Id);
         }
 
-        throw new AuthenticationException();
+        throw new AuthenticationException("Register failed");
     }
 }
