@@ -1,11 +1,11 @@
-using Application.Interfaces.Repositories;
-using Domain.Common.Interfaces;
+using Application.Common.Interfaces.Repositories;
+using Domain.Common;
 using Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class Repository<T> : IRepository<T> where T : class, IEntity
+public class Repository<T> : IRepository<T> where T : BaseEntity
 {
     private readonly ApplicationDbContext _dbContext;
 

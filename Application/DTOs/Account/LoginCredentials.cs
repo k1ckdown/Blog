@@ -6,9 +6,9 @@ public sealed class LoginCredentials
 {
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
-    
+    public required string Email { get; set; }
+
     [Required]
     [MinLength(1)]
-    public string Password { get; set; }
+    public required string Password { get; set;  }
 }

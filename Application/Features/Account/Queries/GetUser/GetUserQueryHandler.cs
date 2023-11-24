@@ -1,5 +1,5 @@
+using Application.Common.Interfaces.Repositories;
 using Application.DTOs.Account;
-using Application.Interfaces.Repositories;
 using AutoMapper;
 using MediatR;
 

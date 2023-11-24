@@ -2,5 +2,5 @@ namespace Application.DTOs.Account;
 
 public class TokenResponse
 {
-    public string Token { get; set; }
+    public required string Token { get; set; }
 }

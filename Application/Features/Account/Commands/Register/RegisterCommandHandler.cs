@@ -1,6 +1,6 @@
+using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Application.DTOs.Account;
-using Application.Interfaces.Repositories;
 using Domain.Entities;
 using MediatR;
 

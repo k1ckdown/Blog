@@ -1,8 +1,8 @@
-using Domain.Common.Interfaces;
+using Domain.Common;
 
-namespace Application.Interfaces.Repositories;
+namespace Application.Common.Interfaces.Repositories;
 
-public interface IRepository<T> where T : class, IEntity
+public interface IRepository<T> where T : BaseEntity
 {
     IQueryable<T> Entities { get; }
     Task AddAsync(T entity);

@@ -7,21 +7,21 @@ public sealed class UserRegisterModel
 {
     [Required]
     [MinLength(1)]
-    public string FullName { get; set; }
+    public required string FullName { get; set; }
     
     [Required]
     [MinLength(6)]
-    public string Password { get; set; }
+    public required string Password { get; set; }
     
     [Required]
     [EmailAddress]
-    public string Email { get; set; }
+    public required string Email { get; set; }
     
     public DateTime BirthDate { get; set; }
     
     [Required]
-    public Gender Gender { get; set; }
+    public required Gender Gender { get; set; }
     
     [Phone]
-    public string PhoneNumber { get; set; }
+    public required string PhoneNumber { get; set; }
 }
