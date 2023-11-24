@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
@@ -7,11 +6,11 @@ using Application.Wrappers;
 
 namespace WebApi.Middlewares;
 
-public sealed class ExceptionHandlerMiddleware : IMiddleware
+public sealed class ExceptionHandlingMiddleware : IMiddleware
 {
-    private readonly ILogger<ExceptionHandlerMiddleware> _logger;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlerMiddleware(ILogger<ExceptionHandlerMiddleware> logger)
+    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger)
     {
         _logger = logger;
     }
@@ -20,7 +19,7 @@ public sealed class ExceptionHandlerMiddleware : IMiddleware
     {
         try
         {
-            await next.Invoke(context);
+            await next(context);
         }
         catch (Exception exception)
         {
@@ -30,7 +29,6 @@ public sealed class ExceptionHandlerMiddleware : IMiddleware
             {
                 BadRequestException => HttpStatusCode.BadRequest,
                 InvalidCredentialException => HttpStatusCode.Unauthorized,
-                ValidationException => HttpStatusCode.BadRequest,
                 NotFoundException => HttpStatusCode.NotFound,
                 _ => HttpStatusCode.InternalServerError
             };
