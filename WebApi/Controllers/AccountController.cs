@@ -1,5 +1,6 @@
 using Application.DTOs.Account;
 using Application.Features.Account.Commands.Login;
+using Application.Features.Account.Commands.Logout;
 using Application.Features.Account.Commands.Register;
 using Application.Features.Account.Queries.GetUser;
 using MediatR;
@@ -14,6 +15,15 @@ public sealed class AccountController : BaseController
     public AccountController(IMediator mediator) : base(mediator) {}
 
     [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register(UserRegisterModel registerModel)
+    {
+        var command = new RegisterCommand(registerModel);
+        var tokenResponse = await Mediator.Send(command);
+        return Ok(tokenResponse);
+    }
+    
+    [HttpPost]
     [Route("login")]
     public async Task<IActionResult> LogIn(LoginCredentials credentials)
     {
@@ -21,14 +31,15 @@ public sealed class AccountController : BaseController
         var tokenResponse = await Mediator.Send(command);
         return Ok(tokenResponse);
     }
-
+    
     [HttpPost]
-    [Route("register")]
-    public async Task<IActionResult> Register(UserRegisterModel registerModel)
+    [Route("logout")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> LogOut()
     {
-        var command = new RegisterCommand(registerModel);
-        var tokenResponse = await Mediator.Send(command);
-        return Ok(tokenResponse);
+        var command = new LogoutCommand();
+        var response = await Mediator.Send(command);
+        return Ok(response);
     }
 
     [HttpGet]

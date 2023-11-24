@@ -1,3 +1,3 @@
 namespace Application.Wrappers;
 
-public sealed record Response(string Status, string Message);
+public sealed record Response(string? Status, string Message);
