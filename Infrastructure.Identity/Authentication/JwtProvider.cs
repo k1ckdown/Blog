@@ -20,7 +20,7 @@ internal sealed class JwtProvider
         {
             new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new (JwtRegisteredClaimNames.Email, user.Email ?? ""),
-            new (JwtRegisteredClaimNames.Jti, new Guid().ToString()),
+            new (JwtRegisteredClaimNames.Jti, new Guid().ToString())
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));

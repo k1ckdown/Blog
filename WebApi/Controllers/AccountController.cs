@@ -1,4 +1,5 @@
 using Application.DTOs.Account;
+using Application.Features.Account.Commands.EditUser;
 using Application.Features.Account.Commands.Login;
 using Application.Features.Account.Commands.Logout;
 using Application.Features.Account.Commands.Register;
@@ -50,5 +51,15 @@ public sealed class AccountController : BaseController
         var query = new GetUserQuery(UserId);
         var userDto = await Mediator.Send(query);
         return Ok(userDto);
+    }
+
+    [HttpPut]
+    [Route("profile")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> EditProfile(UserEditModel editModel)
+    {
+        var command = new EditUserCommand(UserId, editModel);
+        await Mediator.Send(command);
+        return Ok();
     }
 }

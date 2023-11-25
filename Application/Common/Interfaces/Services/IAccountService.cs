@@ -7,5 +7,6 @@ public interface IAccountService
 {
     Task LogOut();
     Task<TokenResponse> LogIn(LoginCredentials credentials);
+    Task UpdateUser(Guid id, string email);
     Task<(TokenResponse, Guid)> Register(UserRegisterModel registerModel);
 }

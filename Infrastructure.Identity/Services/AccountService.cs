@@ -49,6 +49,19 @@ internal sealed class AccountService : IAccountService
         throw new InvalidCredentialException($"Invalid credentials for {credentials.Email}.");
     }
 
+    public async Task UpdateUser(Guid id, string email)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user == null)
+        {
+            throw new NotFoundException(nameof(ApplicationUser), id);
+        }
+
+        user.Email = email;
+        await _userManager.UpdateAsync(user);
+    }
+
     public async Task<(TokenResponse, Guid)> Register(UserRegisterModel registerModel)
     {
         var userExists = await _userManager.FindByEmailAsync(registerModel.Email);
@@ -60,9 +73,8 @@ internal sealed class AccountService : IAccountService
         
         var identityUser = new ApplicationUser
         {
-            UserName = registerModel.Email,
             Email = registerModel.Email,
-            PhoneNumber = registerModel.PhoneNumber,
+            UserName = registerModel.Email
         };
 
         var result = await _userManager.CreateAsync(identityUser, registerModel.Password);
