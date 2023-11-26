@@ -9,28 +9,33 @@ public sealed class AddressRepository : IAddressRepository
 {
     private readonly AddressesDbContext _dbContext;
 
-
-    public AddressRepository(AddressesDbContext dbContext) => 
+    public AddressRepository(AddressesDbContext dbContext) =>
         _dbContext = dbContext;
 
-    public async Task<House?> GetHouseAsync(Guid objectGuid)
-    {
-        return await _dbContext.Houses
+    public IQueryable<AddressHierarchy> Hierarchies => _dbContext.AddressHierarchies;
+
+    public IQueryable<House> Houses =>
+        _dbContext.Houses.Where(house => house.IsActual == 1);
+
+    public IQueryable<AddressElement> AddressElements =>
+        _dbContext.AddressElements.Where(address => address.IsActual == 1);
+
+    public async Task<House?> GetHouseAsync(long objectId) =>
+        await Houses
+            .FirstOrDefaultAsync(house => house.ObjectId == objectId);
+
+    public async Task<House?> GetHouseAsync(Guid objectGuid) =>
+        await Houses
             .FirstOrDefaultAsync(house => house.ObjectGuid == objectGuid);
-    }
-    
-    public async Task<AddressElement?> GetAddressElementAsync(long objectId)
-    {
-        return await _dbContext.AddressElements
-            .FirstOrDefaultAsync(address => address.ObjectId == objectId && address.IsActual == 1);
-    }
-    
-    public async Task<AddressElement?> GetAddressElementAsync(Guid objectGuid)
-    {
-        return await _dbContext.AddressElements
-            .FirstOrDefaultAsync(address => address.ObjectGuid == objectGuid && address.IsActual == 1);
-    }
-    
+
+    public async Task<AddressElement?> GetAddressElementAsync(long objectId) =>
+        await AddressElements
+            .FirstOrDefaultAsync(address => address.ObjectId == objectId);
+
+    public async Task<AddressElement?> GetAddressElementAsync(Guid objectGuid) =>
+        await AddressElements
+            .FirstOrDefaultAsync(address => address.ObjectGuid == objectGuid);
+
     public async Task<string?> GetPathAsync(long objectId)
     {
         var hierarchy = await _dbContext.AddressHierarchies

@@ -22,7 +22,8 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
         CancellationToken cancellationToken)
     {
         long objectId;
-
+        SearchAddressModel firstAddress;
+        
         var result = new List<SearchAddressModel>();
         var notFoundPath = new NotFoundException($"Address path for object ({request.ObjectGuid}) not found");
 
@@ -30,7 +31,7 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
         if (house != null)
         {
             objectId = house.ObjectId;
-            result.Add(_mapper.Map<SearchAddressModel>(house));
+            firstAddress = _mapper.Map<SearchAddressModel>(house);
         }
         else
         {
@@ -38,7 +39,7 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
             if (addressElement == null) throw notFoundPath;
 
             objectId = addressElement.ObjectId;
-            result.Add(_mapper.Map<SearchAddressModel>(addressElement));
+            firstAddress = _mapper.Map<SearchAddressModel>(addressElement);
         }
 
         var path = await _addressRepository.GetPathAsync(objectId);
@@ -53,6 +54,7 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
             var addressElement = await _addressRepository.GetAddressElementAsync(id);
             if (addressElement != null) result.Add(_mapper.Map<SearchAddressModel>(addressElement));
         }
+        result.Add(firstAddress);
 
         return result;
     }
