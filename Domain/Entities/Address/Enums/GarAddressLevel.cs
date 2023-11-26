@@ -2,7 +2,7 @@ namespace Domain.Entities.Address.Enums;
 
 public enum GarAddressLevel
 {
-    Region,
+    Region = 1,
     AdministrativeArea,
     MunicipalArea,
     RuralUrbanSettlement,

@@ -4,8 +4,8 @@ namespace Domain.Entities.Address;
 
 public sealed class House
 {
-    public int Id { get; set; }
-    public int ObjectId { get; set; }
+    public long Id { get; set; }
+    public long ObjectId { get; set; }
     public Guid ObjectGuid { get; set; }
     
     public string? Number { get; set; }

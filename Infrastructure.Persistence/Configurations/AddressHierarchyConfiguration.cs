@@ -8,6 +8,7 @@ public class AddressHierarchyConfiguration : IEntityTypeConfiguration<AddressHie
 {
     public void Configure(EntityTypeBuilder<AddressHierarchy> builder)
     {
+        builder.ToTable("as_adm_hierarchy");
         builder.HasKey(hierarchy => hierarchy.Id);
 
         builder.Property(hierarchy => hierarchy.Id).HasColumnName("id");

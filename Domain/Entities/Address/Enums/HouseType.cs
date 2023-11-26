@@ -2,7 +2,7 @@ namespace Domain.Entities.Address.Enums;
 
 public enum HouseType
 {
-    Estate,
+    Estate = 1,
     House,
     Townhouse,
     Garage,

@@ -6,10 +6,10 @@ namespace Infrastructure.Persistence.Contexts;
 
 public sealed class AddressesDbContext : DbContext
 {
-    public DbSet<House> Houses = null!;
-    public DbSet<Address> Addresses = null!;
-    public DbSet<AddressHierarchy> AddressHierarchies = null!;
-    
+    public DbSet<House> Houses { get; set; } = null!;
+    public DbSet<AddressElement> AddressElements { get; set; } = null!;
+    public DbSet<AddressHierarchy> AddressHierarchies { get; set; } = null!;
+
     public AddressesDbContext(DbContextOptions<AddressesDbContext> options) : base(options) {}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

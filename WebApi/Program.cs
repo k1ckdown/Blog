@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Application;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
@@ -11,7 +12,8 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(config => config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddEndpointsApiExplorer();

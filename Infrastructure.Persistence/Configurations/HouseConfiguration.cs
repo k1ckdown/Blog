@@ -8,6 +8,7 @@ public class HouseConfiguration : IEntityTypeConfiguration<House>
 {
     public void Configure(EntityTypeBuilder<House> builder)
     {
+        builder.ToTable("as_houses");
         builder.HasKey(house => house.Id);
         
         builder.Property(house => house.Id).HasColumnName("id");

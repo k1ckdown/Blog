@@ -2,7 +2,7 @@ namespace Domain.Entities.Address.Enums;
 
 public enum AdditionalPartHouseType
 {
-    BuildingWing,
+    BuildingWing = 1,
     Structure,
     Construction,
     Block

@@ -4,10 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Configurations;
 
-public class AddressConfiguration : IEntityTypeConfiguration<Address>
+public class AddressConfiguration : IEntityTypeConfiguration<AddressElement>
 {
-    public void Configure(EntityTypeBuilder<Address> builder)
+    public void Configure(EntityTypeBuilder<AddressElement> builder)
     {
+        builder.ToTable("as_addr_obj");
         builder.HasKey(address => address.Id);
 
         builder.Property(address => address.Id).HasColumnName("id");
