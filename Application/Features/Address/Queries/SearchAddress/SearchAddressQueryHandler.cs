@@ -25,13 +25,15 @@ public sealed class SearchAddressQueryHandler : IRequestHandler<SearchAddressQue
 
         if (request.Query == null) hierarchies = hierarchies.Take(10);
 
-        var addresses = await hierarchies.Join(_addressRepository.AddressElements,
+        var addresses = await hierarchies
+            .Join(_addressRepository.AddressElements,
                 hierarchy => hierarchy.ObjectId,
                 address => address.ObjectId,
                 (hierarchy, address) => _mapper.Map<SearchAddressModel>(address))
             .ToListAsync(cancellationToken: cancellationToken);
 
-        var houses = await hierarchies.Join(_addressRepository.Houses,
+        var houses = await hierarchies
+            .Join(_addressRepository.Houses,
                 hierarchy => hierarchy.ObjectId,
                 house => house.ObjectId,
                 (hierarchy, house) => _mapper.Map<SearchAddressModel>(house))
