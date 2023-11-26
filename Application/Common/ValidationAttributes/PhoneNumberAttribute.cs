@@ -10,6 +10,6 @@ public sealed partial class PhoneNumberAttribute : ValidationAttribute
             ? ValidationResult.Success
             : new ValidationResult("Phone number is not a valid");
 
-    [GeneratedRegex(@"^(\+7|8)\d{10}$")]
+    [GeneratedRegex(@"^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$")]
     private static partial Regex PhoneRegex();
 }
