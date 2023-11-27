@@ -12,6 +12,9 @@ public sealed class Post : BaseEntity
     public Guid? AddressId { get; set; }
     public List<Tag> Tags { get; set; } = new();
     public List<Like> Likes { get; set; } = new();
+    
+    public User User { get; set; }
+    public required Guid UserId { get; set; }
 }
 
 // id*	string($uuid)

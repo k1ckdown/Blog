@@ -52,7 +52,7 @@ namespace Infrastructure.Persistence.Migrations
                     Image = table.Column<string>(type: "text", nullable: true),
                     CreateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     AddressId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: true)
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,7 +61,8 @@ namespace Infrastructure.Persistence.Migrations
                         name: "FK_Posts_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

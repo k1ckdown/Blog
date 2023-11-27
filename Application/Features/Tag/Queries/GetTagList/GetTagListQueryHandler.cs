@@ -1,5 +1,5 @@
 using Application.Common.Interfaces.Repositories;
-using Application.DTOs.Post;
+using Application.DTOs.TagDTOs;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;

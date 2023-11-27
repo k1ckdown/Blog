@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231127080528_Initial")]
+    [Migration("20231127091350_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -72,7 +72,7 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
@@ -163,9 +163,13 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
-                    b.HasOne("Domain.Entities.User", null)
-                        .WithMany("Posts")
-                        .HasForeignKey("UserId");
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PostTag", b =>
@@ -186,11 +190,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
                     b.Navigation("Likes");
-                });
-
-            modelBuilder.Entity("Domain.Entities.User", b =>
-                {
-                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }
