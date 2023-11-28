@@ -1,27 +1,41 @@
+using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
+using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Post.Commands;
+namespace Application.Features.Posts.Commands;
 
 public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
 {
     private readonly ITagRepository _tagRepository;
     private readonly IPostRepository _postRepository;
+    private readonly IAddressRepository _addressRepository;
 
-    public CreatePostCommandHandler(ITagRepository tagRepository, IPostRepository postRepository)
+    public CreatePostCommandHandler(
+        ITagRepository tagRepository, 
+        IPostRepository postRepository,
+        IAddressRepository addressRepository)
     {
         _tagRepository = tagRepository;
         _postRepository = postRepository;
+        _addressRepository = addressRepository;
     }
     
     public async Task<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
     {
+        if (!(_addressRepository.Houses.Any(house => house.ObjectGuid == request.CreatePostDto.AddressId) ||
+              _addressRepository.AddressElements.Any(element => element.ObjectGuid == request.CreatePostDto.AddressId)))
+        {
+            throw new NotFoundException($"Address ({request.CreatePostDto.AddressId}) not found");
+        }
+
         var tags = new List<Domain.Entities.Tag>();
         
         foreach (var id in request.CreatePostDto.Tags)
         {
             var tag = await _tagRepository.GetByIdAsync(id);
-            if (tag != null) tags.Add(tag);
+            if (tag == null) throw new NotFoundException(nameof(Tag), id); 
+            tags.Add(tag);
         }
         
         var post = new Domain.Entities.Post

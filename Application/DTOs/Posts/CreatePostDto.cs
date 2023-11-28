@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.PostDTOs;
+namespace Application.DTOs.Posts;
 
 public sealed class CreatePostDto
 {
@@ -15,11 +15,12 @@ public sealed class CreatePostDto
     [Required]
     public required int ReadingTime { get; set; }
     
+    [Url]
     public string? Image { get; set; }
     
     public Guid? AddressId { get; set; }
     
     [Required]
     [MinLength(1)]
-    public required List<Guid> Tags { get; set; }
+    public required IList<Guid> Tags { get; set; }
 }
