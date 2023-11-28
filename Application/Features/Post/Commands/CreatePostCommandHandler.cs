@@ -28,14 +28,7 @@ public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand
             throw new NotFoundException($"Address ({request.CreatePostDto.AddressId}) not found");
         }
 
-        var tags = new List<Domain.Entities.Tag>();
-        
-        foreach (var id in request.CreatePostDto.Tags)
-        {
-            var tag = await _tagRepository.GetByIdAsync(id);
-            if (tag == null) throw new NotFoundException(nameof(Tag), id); 
-            tags.Add(tag);
-        }
+        var tags = await GetTagList(request.CreatePostDto.Tags);
         
         var post = new Domain.Entities.Post
         {
@@ -51,5 +44,19 @@ public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand
 
         await _postRepository.AddAsync(post);
         return post.Id;
+    }
+
+    private async Task<List<Domain.Entities.Tag>> GetTagList(IEnumerable<Guid> tagIdentifiers)
+    {
+        var tags = new List<Domain.Entities.Tag>();
+        
+        foreach (var id in tagIdentifiers)
+        {
+            var tag = await _tagRepository.GetByIdAsync(id);
+            if (tag == null) throw new NotFoundException(nameof(Tag), id); 
+            tags.Add(tag);
+        }
+
+        return tags;
     }
 }

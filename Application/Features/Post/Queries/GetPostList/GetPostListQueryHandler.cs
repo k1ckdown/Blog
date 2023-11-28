@@ -22,33 +22,9 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
 
     public async Task<PostPagedListDto> Handle(GetPostListQuery request, CancellationToken cancellationToken)
     {
-        if (request.Min > request.Max)
-            throw new BadRequestException("The minimum reading time cannot exceed the maximum");
-        
         var posts = _postRepository.Entities;
-
-        if (request.Author != null)
-            posts = posts.Where(post => post.User.FullName.ToLower().Contains(request.Author.ToLower()));
-
-        if (request.Min != null)
-            posts = posts.Where(post => post.ReadingTime >= request.Min);
-
-        if (request.Max != null)
-            posts = posts.Where(post => post.ReadingTime <= request.Max);
-
-        if (request.Sorting != null)
-            posts = request.Sorting switch
-            {
-                PostSorting.CreateDesc => posts.OrderByDescending(post => post.CreateTime),
-                PostSorting.CreateAsc => posts.OrderBy(post => post.CreateTime),
-                PostSorting.LikeAsc => posts.OrderBy(post => post.Likes.Count),
-                PostSorting.LikeDesc => posts.OrderByDescending(post => post.Likes.Count),
-                _ => posts
-            };
-
-        if (request.Tags != null) 
-            posts = request.Tags.Aggregate(posts, (current, tagId) =>
-                current.Where(post => post.Tags.Any(tag => tag.Id == tagId)));
+        posts = GetFilteredPosts(posts, request.Author, request.Min, request.Max, request.Tags);
+        posts = GetSortedPosts(posts, request.Sorting);
 
         var postList = await posts
             .Skip((request.Page - 1) * request.Size)
@@ -73,5 +49,45 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
         };
 
         return pagedList;
+    }
+
+    private static IQueryable<Domain.Entities.Post> GetSortedPosts(
+        IQueryable<Domain.Entities.Post> posts,
+        PostSorting? sortingType)
+    {
+        return sortingType switch
+        {
+            PostSorting.CreateDesc => posts.OrderByDescending(post => post.CreateTime),
+            PostSorting.CreateAsc => posts.OrderBy(post => post.CreateTime),
+            PostSorting.LikeAsc => posts.OrderBy(post => post.Likes.Count),
+            PostSorting.LikeDesc => posts.OrderByDescending(post => post.Likes.Count),
+            _ => posts
+        };
+    }
+
+    private static IQueryable<Domain.Entities.Post> GetFilteredPosts(
+        IQueryable<Domain.Entities.Post> posts,
+        string? authorName,
+        int? minReadingTime,
+        int? maxReadingTime,
+        IEnumerable<Guid>? tagIds)
+    {
+        if (minReadingTime > maxReadingTime)
+            throw new BadRequestException("The minimum reading time cannot exceed the maximum");
+
+        if (authorName != null)
+            posts = posts.Where(post => post.User.FullName.ToLower().Contains(authorName.ToLower()));
+
+        if (minReadingTime != null)
+            posts = posts.Where(post => post.ReadingTime >= minReadingTime);
+
+        if (maxReadingTime != null)
+            posts = posts.Where(post => post.ReadingTime <= maxReadingTime);
+
+        if (tagIds != null)
+            posts = tagIds.Aggregate(posts, (current, tagId) =>
+                current.Where(post => post.Tags.Any(tag => tag.Id == tagId)));
+
+        return posts;
     }
 }
