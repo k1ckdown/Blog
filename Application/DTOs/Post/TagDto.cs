@@ -1,7 +1,7 @@
 using Application.Common.Mappings;
 using Domain.Entities;
 
-namespace Application.DTOs.Posts;
+namespace Application.DTOs.Post;
 
 public sealed class TagDto : IMapFrom<Tag>
 {

@@ -1,6 +1,6 @@
 using Application.DTOs.Common;
 
-namespace Application.DTOs.Posts;
+namespace Application.DTOs.Post;
 
 public sealed class PostPagedListDto
 {

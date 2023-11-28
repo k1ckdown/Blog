@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Application.DTOs.Posts;
+using Application.DTOs.Post;
 using MediatR;
 
-namespace Application.Features.Posts.Queries.GetPostList;
+namespace Application.Features.Post.Queries.GetPostList;
 
 public sealed class GetPostListQuery : IRequest<PostPagedListDto>
 {

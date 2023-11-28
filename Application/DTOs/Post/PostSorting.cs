@@ -1,4 +1,4 @@
-namespace Application.DTOs.Posts;
+namespace Application.DTOs.Post;
 
 public enum PostSorting
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.Posts;
+namespace Application.DTOs.Post;
 
 public sealed class CreatePostDto
 {

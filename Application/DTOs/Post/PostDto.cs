@@ -1,10 +1,9 @@
 using Application.Common.Mappings;
 using AutoMapper;
-using Domain.Entities;
 
-namespace Application.DTOs.Posts;
+namespace Application.DTOs.Post;
 
-public sealed class PostDto : IMapFrom<Post>
+public sealed class PostDto : IMapFrom<Domain.Entities.Post>
 {
     public required Guid Id { get; set; }
     public required DateTime CreateTime { get; set; }
@@ -24,7 +23,7 @@ public sealed class PostDto : IMapFrom<Post>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<Post, PostDto>()
+        profile.CreateMap<Domain.Entities.Post, PostDto>()
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User.FullName))
             .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count));

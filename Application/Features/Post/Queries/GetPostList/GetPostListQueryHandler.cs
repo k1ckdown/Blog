@@ -1,13 +1,13 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Application.DTOs.Common;
-using Application.DTOs.Posts;
+using Application.DTOs.Post;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Application.Features.Posts.Queries.GetPostList;
+namespace Application.Features.Post.Queries.GetPostList;
 
 public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, PostPagedListDto>
 {

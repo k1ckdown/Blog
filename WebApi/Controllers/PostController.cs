@@ -1,6 +1,6 @@
-using Application.DTOs.Posts;
-using Application.Features.Posts.Commands;
-using Application.Features.Posts.Queries.GetPostList;
+using Application.DTOs.Post;
+using Application.Features.Post.Commands;
+using Application.Features.Post.Queries.GetPostList;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

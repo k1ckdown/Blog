@@ -1,9 +1,8 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Domain.Entities;
 using MediatR;
 
-namespace Application.Features.Posts.Commands;
+namespace Application.Features.Post.Commands;
 
 public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
 {
