@@ -25,7 +25,7 @@ public sealed class SearchAddressQueryHandler : IRequestHandler<SearchAddressQue
 
         if (request.Query == null) hierarchies = hierarchies.Take(10);
 
-        var addresses = await hierarchies
+        var addressElements = await hierarchies
             .Join(_addressRepository.AddressElements,
                 hierarchy => hierarchy.ObjectId,
                 address => address.ObjectId,
@@ -39,7 +39,12 @@ public sealed class SearchAddressQueryHandler : IRequestHandler<SearchAddressQue
                 (hierarchy, house) => _mapper.Map<SearchAddressModel>(house))
             .ToListAsync(cancellationToken: cancellationToken);
 
-        return addresses.Concat(houses)
-            .Where(address => address.Text != null && address.Text.ToLower().Contains(request.Query?.ToLower() ?? ""));
+        var result = addressElements.Concat(houses);
+
+        if (request.Query != null)
+            result = result.Where(address =>
+                address.Text != null && address.Text.ToLower().Contains(request.Query.ToLower()));
+
+        return result;
     }
 }

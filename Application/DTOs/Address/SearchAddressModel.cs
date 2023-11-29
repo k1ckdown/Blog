@@ -17,15 +17,11 @@ public sealed class SearchAddressModel : IMapFrom<AddressElement>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<House, SearchAddressModel>()
-            .ForMember(dest => dest.ObjectId, opt => opt.MapFrom(src => src.ObjectId))
-            .ForMember(dest => dest.ObjectGuid, opt => opt.MapFrom(src => src.ObjectGuid))
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => GetAddressOfHouse(src)))
             .ForMember(dest => dest.ObjectLevel, opt => opt.MapFrom(src => GarAddressLevel.Building))
             .ForMember(dest => dest.ObjectLevelText, opt => opt.MapFrom(src => GetObjectLevelText(GarAddressLevel.Building)));
 
         profile.CreateMap<AddressElement, SearchAddressModel>()
-            .ForMember(dest => dest.ObjectId, opt => opt.MapFrom(src => src.ObjectId))
-            .ForMember(dest => dest.ObjectGuid, opt => opt.MapFrom(src => src.ObjectGuid))
             .ForMember(dest => dest.Text, opt => opt.MapFrom(src => $"{src.TypeName} {src.Name}"))
             .ForMember(dest => dest.ObjectLevel, opt => opt.MapFrom(src => GetAddressLevel(src.Level)))
             .ForMember(dest => dest.ObjectLevelText, opt => opt.MapFrom(src => GetObjectLevelText(GetAddressLevel(src.Level))));

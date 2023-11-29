@@ -7,33 +7,33 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class Repository<T> : IRepository<T> where T : BaseEntity
 {
-    private readonly ApplicationDbContext _dbContext;
-
+    protected readonly ApplicationDbContext DbContext;
+    
     protected Repository(ApplicationDbContext dbContext) =>
-        _dbContext = dbContext;
+        DbContext = dbContext;
 
-    public IQueryable<T> Entities => _dbContext.Set<T>();
+    public IQueryable<T> Entities => DbContext.Set<T>();
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _dbContext.Set<T>().FindAsync(id);
+        return await DbContext.Set<T>().FindAsync(id);
     }
     
     public async Task UpdateAsync(T entity)
     {
-        _dbContext.Entry(entity).State = EntityState.Modified;
-        await _dbContext.SaveChangesAsync();
+        DbContext.Entry(entity).State = EntityState.Modified;
+        await DbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(T entity)
     {
-        _dbContext.Set<T>().Remove(entity);
-        await _dbContext.SaveChangesAsync();
+        DbContext.Set<T>().Remove(entity);
+        await DbContext.SaveChangesAsync();
     }
     
     public async Task AddAsync(T entity)
     {
-        await _dbContext.Set<T>().AddAsync(entity);
-        await _dbContext.SaveChangesAsync();
+        await DbContext.Set<T>().AddAsync(entity);
+        await DbContext.SaveChangesAsync();
     }
 }
