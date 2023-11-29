@@ -3,7 +3,6 @@ using Application.Common.Interfaces.Repositories;
 using Application.DTOs.Common;
 using Application.DTOs.Post;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,28 +22,35 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
     public async Task<PostPagedListDto> Handle(GetPostListQuery request, CancellationToken cancellationToken)
     {
         var posts = _postRepository.Entities;
-        posts = GetFilteredPosts(posts, request.Author, request.Min, request.Max, request.Tags);
-        posts = GetSortedPosts(posts, request.Sorting);
+        posts = GetFilteredPosts(posts, request.Parameters);
+        posts = GetSortedPosts(posts, request.Parameters.Sorting);
+
+        var totalPages = (int)Math.Ceiling(posts.Count() / (request.Parameters.Size * 1.0));
+        if (request.Parameters.Page > totalPages && posts.Any())
+            throw new BadRequestException("Invalid value for attribute page");
 
         var postList = await posts
-            .Skip((request.Page - 1) * request.Size)
-            .Take(request.Size)
-            .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
+            .Skip((request.Parameters.Page - 1) * request.Parameters.Size)
+            .Take(request.Parameters.Size)
+            .Include(post => post.User)
+            .Include(post => post.Tags)
+            .Include(post => post.Likes)
             .ToListAsync(cancellationToken);
-
-        var count = (int)Math.Ceiling(posts.Count() / (request.Size * 1.0));
-        if (request.Page > count && posts.Any()) throw new BadRequestException("Invalid value for attribute page");
-
+        
+        var postListDto = _mapper.Map<List<PostDto>>(postList);
+        for (var i = 0; i < postListDto.Count; i++)
+            postListDto[i].HasLike = postList[i].Likes.Any(like => like.UserId == request.UserId);
+            
         var pageInfo = new PageInfoModel
         {
-            Size = Math.Min(request.Size, postList.Count),
-            Count = count,
-            Current = request.Page
+            Size = Math.Min(request.Parameters.Size, postListDto.Count),
+            Count = totalPages,
+            Current = request.Parameters.Page
         };
 
         var pagedList = new PostPagedListDto
         {
-            Posts = postList,
+            Posts = postListDto,
             Pagination = pageInfo
         };
 
@@ -67,25 +73,22 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
 
     private static IQueryable<Domain.Entities.Post> GetFilteredPosts(
         IQueryable<Domain.Entities.Post> posts,
-        string? authorName,
-        int? minReadingTime,
-        int? maxReadingTime,
-        IEnumerable<Guid>? tagIds)
+        PostSearchParameters parameters)
     {
-        if (minReadingTime > maxReadingTime)
+        if (parameters.Min > parameters.Max)
             throw new BadRequestException("The minimum reading time cannot exceed the maximum");
 
-        if (authorName != null)
-            posts = posts.Where(post => post.User.FullName.ToLower().Contains(authorName.ToLower()));
+        if (parameters.Author != null)
+            posts = posts.Where(post => post.User.FullName.ToLower().Contains(parameters.Author.ToLower()));
 
-        if (minReadingTime != null)
-            posts = posts.Where(post => post.ReadingTime >= minReadingTime);
+        if (parameters.Min != null)
+            posts = posts.Where(post => post.ReadingTime >= parameters.Min);
 
-        if (maxReadingTime != null)
-            posts = posts.Where(post => post.ReadingTime <= maxReadingTime);
+        if (parameters.Max != null)
+            posts = posts.Where(post => post.ReadingTime <= parameters.Max);
 
-        if (tagIds != null)
-            posts = tagIds.Aggregate(posts, (current, tagId) =>
+        if (parameters.Tags != null)
+            posts = parameters.Tags.Aggregate(posts, (current, tagId) =>
                 current.Where(post => post.Tags.Any(tag => tag.Id == tagId)));
 
         return posts;

@@ -2,7 +2,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using MediatR;
 
-namespace Application.Features.Post.Commands;
+namespace Application.Features.Post.Commands.CreatePost;
 
 public sealed class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
 {

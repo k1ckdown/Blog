@@ -13,6 +13,7 @@ public sealed class CreatePostDto
     public required string Description { get; set; }
     
     [Required]
+    [Range(0, int.MaxValue)]
     public required int ReadingTime { get; set; }
     
     [Url]

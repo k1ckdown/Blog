@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Application.Common.Mappings;
 using AutoMapper;
 
@@ -16,10 +17,21 @@ public sealed class PostDto : IMapFrom<Domain.Entities.Post>
     public Guid? CommunityId { get; set; }
     public string? CommunityName { get; set; }
     public Guid? AddressId { get; set; }
-    public int Likes { get; set; }
-    public bool HasLike { get; set; }
-    public int CommentsCount { get; set; }
+    
+    [DefaultValue(DefaultLikes)]
+    public int Likes { get; set; } = DefaultLikes;
+
+    [DefaultValue(DefaultHasLike)] 
+    public bool HasLike { get; set; } = DefaultHasLike;
+
+    [DefaultValue(DefaultCommentsCount)]
+    public int CommentsCount { get; set; } = DefaultCommentsCount;
+    
     public required IEnumerable<TagDto> Tags { get; set; }
+
+    private const int DefaultLikes = 0;
+    private const bool DefaultHasLike = false;
+    private const int DefaultCommentsCount = 0;
 
     public void Mapping(Profile profile)
     {
