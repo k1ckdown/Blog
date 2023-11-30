@@ -22,13 +22,52 @@ namespace Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("CommentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeleteDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Like", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("PostId")
+                    b.Property<Guid>("PostId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("UserId")
@@ -40,7 +79,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Post", b =>
@@ -76,7 +115,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
@@ -94,7 +133,69 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cbbee647-d1db-4b9b-b053-f9f640bb97d8"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 297, DateTimeKind.Utc).AddTicks(9990),
+                            Name = "it"
+                        },
+                        new
+                        {
+                            Id = new Guid("3f34aaa1-b6be-432d-9ffc-aee460e3b7d7"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 297, DateTimeKind.Utc).AddTicks(9990),
+                            Name = "18+"
+                        },
+                        new
+                        {
+                            Id = new Guid("cada0a21-a535-4126-ae94-b3f0f1171415"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 297, DateTimeKind.Utc).AddTicks(9990),
+                            Name = "соцсети"
+                        },
+                        new
+                        {
+                            Id = new Guid("542a25a1-9b47-4b43-a1b3-8e98018fd5ab"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 297, DateTimeKind.Utc).AddTicks(9990),
+                            Name = "интернет"
+                        },
+                        new
+                        {
+                            Id = new Guid("f8bf2f1b-48bb-4749-b984-0c9856093ba0"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "история"
+                        },
+                        new
+                        {
+                            Id = new Guid("3070c757-f147-4576-947e-3c0d89494fcb"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "приколы"
+                        },
+                        new
+                        {
+                            Id = new Guid("0f7740e0-8fed-4721-bc0e-7d2eac48434e"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "косплей"
+                        },
+                        new
+                        {
+                            Id = new Guid("4a239805-e276-455e-b0a1-ad3b2958ac70"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "преступление"
+                        },
+                        new
+                        {
+                            Id = new Guid("3fc1a0fb-b836-4eb2-83b8-9d56eb8d93d5"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "еда"
+                        },
+                        new
+                        {
+                            Id = new Guid("a80d3dd8-b6c1-4d85-959f-1433ab1523b5"),
+                            CreateTime = new DateTime(2023, 11, 30, 15, 32, 46, 298, DateTimeKind.Utc),
+                            Name = "теория заговора"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
@@ -125,7 +226,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PostTag", b =>
@@ -140,14 +241,35 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("PostTag");
+                    b.ToTable("PostTag", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.HasOne("Domain.Entities.Comment", null)
+                        .WithMany("SubComments")
+                        .HasForeignKey("CommentId");
+
+                    b.HasOne("Domain.Entities.Post", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Like", b =>
                 {
                     b.HasOne("Domain.Entities.Post", null)
                         .WithMany("Likes")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
@@ -184,8 +306,15 @@ namespace Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Entities.Comment", b =>
+                {
+                    b.Navigation("SubComments");
+                });
+
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Likes");
                 });
 #pragma warning restore 612, 618
