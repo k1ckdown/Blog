@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231130164721_AddCommunity")]
+    [Migration("20231130165553_AddCommunity")]
     partial class AddCommunity
     {
         /// <inheritdoc />
@@ -133,6 +133,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<Guid?>("AddressId")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("CommunityId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -154,6 +157,8 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommunityId");
 
                     b.HasIndex("UserId");
 
@@ -181,61 +186,61 @@ namespace Infrastructure.Persistence.Migrations
                         new
                         {
                             Id = new Guid("cbbee647-d1db-4b9b-b053-f9f640bb97d8"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "it"
                         },
                         new
                         {
                             Id = new Guid("3f34aaa1-b6be-432d-9ffc-aee460e3b7d7"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "18+"
                         },
                         new
                         {
                             Id = new Guid("cada0a21-a535-4126-ae94-b3f0f1171415"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "соцсети"
                         },
                         new
                         {
                             Id = new Guid("542a25a1-9b47-4b43-a1b3-8e98018fd5ab"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "интернет"
                         },
                         new
                         {
                             Id = new Guid("f8bf2f1b-48bb-4749-b984-0c9856093ba0"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "история"
                         },
                         new
                         {
                             Id = new Guid("3070c757-f147-4576-947e-3c0d89494fcb"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "приколы"
                         },
                         new
                         {
                             Id = new Guid("0f7740e0-8fed-4721-bc0e-7d2eac48434e"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "косплей"
                         },
                         new
                         {
                             Id = new Guid("4a239805-e276-455e-b0a1-ad3b2958ac70"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7160),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "преступление"
                         },
                         new
                         {
                             Id = new Guid("3fc1a0fb-b836-4eb2-83b8-9d56eb8d93d5"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7170),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "еда"
                         },
                         new
                         {
                             Id = new Guid("a80d3dd8-b6c1-4d85-959f-1433ab1523b5"),
-                            CreateTime = new DateTime(2023, 11, 30, 16, 47, 21, 97, DateTimeKind.Utc).AddTicks(7170),
+                            CreateTime = new DateTime(2023, 11, 30, 16, 55, 53, 667, DateTimeKind.Utc).AddTicks(5700),
                             Name = "теория заговора"
                         });
                 });
@@ -344,11 +349,17 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Post", b =>
                 {
+                    b.HasOne("Domain.Entities.Community", "Community")
+                        .WithMany()
+                        .HasForeignKey("CommunityId");
+
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Community");
 
                     b.Navigation("User");
                 });
