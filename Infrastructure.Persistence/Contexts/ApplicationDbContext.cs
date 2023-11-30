@@ -1,4 +1,3 @@
-using Domain.Common;
 using Domain.Entities;
 using Infrastructure.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +12,7 @@ public sealed class ApplicationDbContext : DbContext
     
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<Community> Communities { get; set; } = null!;
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
@@ -22,5 +22,6 @@ public sealed class ApplicationDbContext : DbContext
 
         builder.ApplyConfiguration(new TagConfiguration());
         builder.ApplyConfiguration(new PostConfiguration());
+        builder.ApplyConfiguration(new CommunityConfiguration());
     }
 }
