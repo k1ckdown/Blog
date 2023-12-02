@@ -5,7 +5,7 @@ using AutoMapper;
 
 namespace Application.DTOs.Community;
 
-public sealed class CommunityDto : IMapFrom<Domain.Entities.Community>
+public class CommunityDto : IMapFrom<Domain.Entities.Community>
 {
     public required Guid Id { get; set; }
     
@@ -26,7 +26,7 @@ public sealed class CommunityDto : IMapFrom<Domain.Entities.Community>
     private const bool DefaultIsClosed = false;
     private const int DefaultSubscribersCount = 0;
 
-    public void Mapping(Profile profile)
+    public virtual void Mapping(Profile profile)
     {
         profile.CreateMap<Domain.Entities.Community, CommunityDto>()
             .ForMember(dest => dest.SubscribersCount, opt => opt.MapFrom(src => src.Subscribers.Count));

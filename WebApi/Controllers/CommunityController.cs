@@ -1,4 +1,5 @@
 using Application.DTOs.Community;
+using Application.Features.Community.Queries.GetCommunity;
 using Application.Features.Community.Queries.GetCommunityList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,5 +16,13 @@ public sealed class CommunityController : BaseController
         var getCommunityListQuery = new GetCommunityListQuery();
         var list = await Mediator.Send(getCommunityListQuery);
         return Ok(list);
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<CommunityFullDto>> GetCommunity(Guid id)
+    {
+        var getCommunityQuery = new GetCommunityQuery(id);
+        var communityFullDto = await Mediator.Send(getCommunityQuery);
+        return communityFullDto;
     }
 }
