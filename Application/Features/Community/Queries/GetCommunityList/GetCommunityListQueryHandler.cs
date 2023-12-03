@@ -24,6 +24,7 @@ public sealed class GetCommunityListQueryHandler : IRequestHandler<GetCommunityL
         GetCommunityListQuery request,
         CancellationToken cancellationToken) =>
         await _communityRepository.Entities
+            .Include(community => community.Subscribers)
             .ProjectTo<CommunityDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 }

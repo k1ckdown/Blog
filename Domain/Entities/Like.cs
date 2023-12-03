@@ -1,8 +1,6 @@
-using Domain.Common;
-
 namespace Domain.Entities;
 
-public sealed class Like : BaseEntity
+public sealed class Like
 {
     public User User { get; set; }
     

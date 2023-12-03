@@ -14,7 +14,9 @@ public sealed class CommunityConfiguration : IEntityTypeConfiguration<Community>
         builder
             .HasMany(community => community.Subscribers)
             .WithMany(subscriber => subscriber.Subscriptions)
-            .UsingEntity(joinEntity => joinEntity.ToTable("Subscribers"));
+            .UsingEntity<Subscription>(
+                l => l.HasOne<User>().WithMany().HasForeignKey(e => e.UserId),
+                r => r.HasOne<Community>().WithMany().HasForeignKey(e => e.CommunityId));
 
         builder
             .HasData(
