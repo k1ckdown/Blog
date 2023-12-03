@@ -3,6 +3,7 @@ using Application;
 using Infrastructure.Identity;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.OpenApi.Models;
 using WebApi.Middlewares;
 
@@ -12,9 +13,12 @@ builder.Services.AddApplicationLayer();
 builder.Services.AddIdentityInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers()
-    .AddJsonOptions(config => config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddControllers(opt =>
+    {
+        opt.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
+    })
+    .AddJsonOptions(config => config.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 builder.Services.Configure<RouteOptions>(options =>
 {

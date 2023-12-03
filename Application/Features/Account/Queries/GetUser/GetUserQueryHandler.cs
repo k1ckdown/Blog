@@ -22,11 +22,8 @@ public sealed class GetUserQueryHandler : IRequestHandler<GetUserQuery, UserDto>
     {
         var user = await _userRepository.GetByIdAsync(request.Id);
 
-        if (user == null)
-        {
-            throw new NotFoundException(nameof(User), request.Id);
-        }
-
+        if (user == null) throw new NotFoundException(nameof(User), request.Id);
+        
         var userDto = _mapper.Map<UserDto>(user);
         return userDto;
     }
