@@ -3,6 +3,7 @@ using Application.Features.Community.Commands.SubscribeToCommunity;
 using Application.Features.Community.Commands.UnsubscribeFromCommunity;
 using Application.Features.Community.Queries.GetCommunity;
 using Application.Features.Community.Queries.GetCommunityList;
+using Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -28,6 +29,16 @@ public sealed class CommunityController : BaseController
         var getCommunityQuery = new GetCommunityQuery(id);
         var communityFullDto = await Mediator.Send(getCommunityQuery);
         return communityFullDto;
+    }
+
+    [HttpGet]
+    [Route("{id:guid}/role")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<CommunityRole?>> GetGreatestUserRole(Guid id)
+    {
+        var getGreatestUserRoleInCommunityQuery = new GetGreatestUserRoleInCommunityQuery(UserId, id);
+        var role = await Mediator.Send(getGreatestUserRoleInCommunityQuery);
+        return Ok(role);
     }
 
     [HttpPost]
