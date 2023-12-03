@@ -1,4 +1,4 @@
-using Application.DTOs.Community;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;

@@ -9,12 +9,16 @@ public sealed class CommunityConfiguration : IEntityTypeConfiguration<Community>
     public void Configure(EntityTypeBuilder<Community> builder)
     {
         builder
-            .HasMany(community => community.Administrators);
-
-        builder
             .HasMany(community => community.Subscribers)
             .WithMany(subscriber => subscriber.Subscriptions)
             .UsingEntity<Subscription>(
+                l => l.HasOne<User>().WithMany().HasForeignKey(e => e.UserId),
+                r => r.HasOne<Community>().WithMany().HasForeignKey(e => e.CommunityId));
+
+        builder
+            .HasMany(community => community.Administrators)
+            .WithMany(admin => admin.Communities)
+            .UsingEntity<CommunityAdmin>(
                 l => l.HasOne<User>().WithMany().HasForeignKey(e => e.UserId),
                 r => r.HasOne<Community>().WithMany().HasForeignKey(e => e.CommunityId));
 
@@ -52,7 +56,7 @@ public sealed class CommunityConfiguration : IEntityTypeConfiguration<Community>
     }
 
     private static Community CreateCommunity(string id, string name, string description, bool isClosed) =>
-        new Community
+        new()
         {
             Id = new Guid(id),
             Name = name,

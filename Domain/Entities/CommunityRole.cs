@@ -1,4 +1,4 @@
-namespace Application.DTOs.Community;
+namespace Domain.Entities;
 
 public enum CommunityRole
 {

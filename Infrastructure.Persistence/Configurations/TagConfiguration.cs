@@ -23,7 +23,7 @@ public sealed class TagConfiguration : IEntityTypeConfiguration<Tag>
     }
 
     private static Tag CreateTag(string id, string name) =>
-        new Tag
+        new()
         {
             Id = new Guid(id),
             Name = name,

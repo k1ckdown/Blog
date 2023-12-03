@@ -1,7 +1,7 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Application.DTOs.Community;
 using Application.Services.Community;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;

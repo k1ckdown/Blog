@@ -4,6 +4,7 @@ using Application.Features.Community.Commands.UnsubscribeFromCommunity;
 using Application.Features.Community.Queries.GetCommunity;
 using Application.Features.Community.Queries.GetCommunityList;
 using Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
