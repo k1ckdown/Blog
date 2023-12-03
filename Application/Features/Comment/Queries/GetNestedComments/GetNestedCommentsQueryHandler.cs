@@ -19,7 +19,7 @@ public sealed class GetNestedCommentsQueryHandler : IRequestHandler<GetNestedCom
 
     public async Task<IEnumerable<CommentDto>> Handle(GetNestedCommentsQuery request, CancellationToken cancellationToken)
     {
-        var comment = await _commentRepository.GetByIdAsync(request.CommentId);
+        var comment = await _commentRepository.GetByIdIncludingAllAsync(request.CommentId);
 
         if (comment == null) throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
 

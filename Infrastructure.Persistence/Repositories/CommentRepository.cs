@@ -9,7 +9,7 @@ public sealed class CommentRepository : Repository<Comment>, ICommentRepository
 {
    public CommentRepository(ApplicationDbContext dbContext) : base(dbContext) {}
 
-   public new async Task<Comment?> GetByIdAsync(Guid id) =>
+   public async Task<Comment?> GetByIdIncludingAllAsync(Guid id) =>
        await DbContext.Comments
            .Include(comment => comment.User)
            .Include(comment => comment.SubComments)

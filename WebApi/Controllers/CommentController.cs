@@ -1,5 +1,6 @@
 using Application.DTOs.Comment;
 using Application.Features.Comment.Commands.CreateComment;
+using Application.Features.Comment.Commands.EditComment;
 using Application.Features.Comment.Queries.GetNestedComments;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,6 +30,16 @@ public sealed class CommentController : BaseController
     {
         var createCommentCommand = new CreateCommentCommand(UserId, id, createCommentDto);
         await Mediator.Send(createCommentCommand);
+        return Ok();
+    }
+
+    [HttpPut]
+    [Route("comment/{id:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> EditComment(Guid id, UpdateCommentDto updateCommentDto)
+    {
+        var editCommentCommand = new EditCommentCommand(UserId, id, updateCommentDto);
+        await Mediator.Send(editCommentCommand);
         return Ok();
     }
 }

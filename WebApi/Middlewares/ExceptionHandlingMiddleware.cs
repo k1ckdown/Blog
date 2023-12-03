@@ -27,9 +27,10 @@ public sealed class ExceptionHandlingMiddleware : IMiddleware
 
             var statusCode = exception switch
             {
+                NotFoundException => HttpStatusCode.NotFound,
+                ForbiddenException => HttpStatusCode.Forbidden,
                 BadRequestException => HttpStatusCode.BadRequest,
                 InvalidCredentialException => HttpStatusCode.Unauthorized,
-                NotFoundException => HttpStatusCode.NotFound,
                 _ => HttpStatusCode.InternalServerError
             };
 
