@@ -1,5 +1,4 @@
 using System.Reflection;
-using Application.Services.Community;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
@@ -10,11 +9,5 @@ public static class DependencyInjection
     {
         services.AddAutoMapper(Assembly.GetExecutingAssembly());
         services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-        services.AddServices();
-    }
-
-    private static void AddServices(this IServiceCollection services)
-    {
-        services.AddScoped<ICommunityService, CommunityService>();
     }
 }

@@ -17,7 +17,7 @@ public sealed class CommunityConfiguration : IEntityTypeConfiguration<Community>
 
         builder
             .HasMany(community => community.Administrators)
-            .WithMany(admin => admin.Communities)
+            .WithMany(admin => admin.AdministeredCommunities)
             .UsingEntity<CommunityAdmin>(
                 l => l.HasOne<User>().WithMany().HasForeignKey(e => e.UserId),
                 r => r.HasOne<Community>().WithMany().HasForeignKey(e => e.CommunityId));

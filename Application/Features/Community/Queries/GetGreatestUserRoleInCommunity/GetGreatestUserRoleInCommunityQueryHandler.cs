@@ -1,25 +1,18 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Application.Services.Community;
 using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
 
-public sealed class GetGreatestUserRoleInCommunityQueryHandler 
+public sealed class GetGreatestUserRoleInCommunityQueryHandler
     : IRequestHandler<GetGreatestUserRoleInCommunityQuery, CommunityRole?>
 {
-    private readonly ICommunityService _communityService;
     private readonly ICommunityRepository _communityRepository;
 
-    public GetGreatestUserRoleInCommunityQueryHandler(
-        ICommunityService communityService, 
-        ICommunityRepository communityRepository)
-    {
-        _communityService = communityService;
+    public GetGreatestUserRoleInCommunityQueryHandler(ICommunityRepository communityRepository) =>
         _communityRepository = communityRepository;
-    }
-    
+
     public async Task<CommunityRole?> Handle(GetGreatestUserRoleInCommunityQuery request, CancellationToken cancellationToken)
     {
         var community = await _communityRepository.GetByIdAsync(request.CommunityId);
@@ -27,6 +20,12 @@ public sealed class GetGreatestUserRoleInCommunityQueryHandler
         if (community == null)
             throw new NotFoundException(nameof(Community), request.CommunityId);
 
-        return _communityService.GetGreatestUserRole(request.UserId, community);
+        if (community.Administrators.Any(administrator => administrator.Id == request.UserId))
+            return CommunityRole.Administrator;
+
+        if (community.Subscribers.Any(subscriber => subscriber.Id == request.UserId))
+            return CommunityRole.Subscriber;
+
+        return null;
     }
 }

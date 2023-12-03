@@ -4,6 +4,7 @@ using Application.Features.Community.Commands.UnsubscribeFromCommunity;
 using Application.Features.Community.Queries.GetCommunity;
 using Application.Features.Community.Queries.GetCommunityList;
 using Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
+using Application.Features.Community.Queries.GetUserCommunities;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -22,6 +23,16 @@ public sealed class CommunityController : BaseController
         var getCommunityListQuery = new GetCommunityListQuery();
         var list = await Mediator.Send(getCommunityListQuery);
         return Ok(list);
+    }
+
+    [HttpGet]
+    [Route("my")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<IEnumerable<CommunityUserDto>>> GetUserCommunities()
+    {
+        var getUserCommunitiesQuery = new GetUserCommunitiesQuery(UserId);
+        var communities = await Mediator.Send(getUserCommunitiesQuery);
+        return Ok(communities);
     }
 
     [HttpGet("{id:guid}")]
