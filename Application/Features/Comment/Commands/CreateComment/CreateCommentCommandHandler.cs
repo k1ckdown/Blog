@@ -15,6 +15,7 @@ public sealed class CreateCommentCommandHandler : IRequestHandler<CreateCommentC
     {
         var comment = new Domain.Entities.Comment
         {
+            ParentId = request.CreateCommentDto.ParentId, 
             Content = request.CreateCommentDto.Content,
             CreateTime = DateTime.UtcNow,
             UserId = request.UserId,

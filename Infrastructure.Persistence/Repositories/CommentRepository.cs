@@ -13,6 +13,5 @@ public sealed class CommentRepository : Repository<Comment>, ICommentRepository
        await DbContext.Comments
            .Include(comment => comment.User)
            .Include(comment => comment.SubComments)
-           .ThenInclude(subComment => subComment.SubComments)
            .FirstOrDefaultAsync(comment => comment.Id == id);
 }

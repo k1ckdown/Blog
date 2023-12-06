@@ -20,10 +20,29 @@ public sealed class GetNestedCommentsQueryHandler : IRequestHandler<GetNestedCom
     public async Task<IEnumerable<CommentDto>> Handle(GetNestedCommentsQuery request, CancellationToken cancellationToken)
     {
         var comment = await _commentRepository.GetByIdIncludingAllAsync(request.CommentId);
+        
+        if (comment == null) 
+            throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
+        
+        if (comment.ParentId != null)
+            throw new BadRequestException($"Comment ({request.CommentId}) is not a root element");
 
-        if (comment == null) throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
+        var nestedComments = new List<Domain.Entities.Comment>();
+        var queue = new Queue<Domain.Entities.Comment>(comment.SubComments);
+        
+        while (queue.Count > 0)
+        {
+            var currentComment = await _commentRepository.GetByIdIncludingAllAsync(queue.Dequeue().Id);
+            if (currentComment == null) continue;
+            
+            nestedComments.Add(currentComment);
+            foreach (var subComment in currentComment.SubComments)
+            {
+                queue.Enqueue(subComment);
+            }
+        }
 
-        var subComments = _mapper.Map<List<Domain.Entities.Comment>, IEnumerable<CommentDto>>(comment.SubComments);
-        return subComments;
+        var nestedCommentListDto = _mapper.Map<List<Domain.Entities.Comment>, IEnumerable<CommentDto>>(nestedComments);
+        return nestedCommentListDto;
     }
 }
