@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.Repositories;
 public sealed class PostRepository : Repository<Post>, IPostRepository
 {
     public PostRepository(ApplicationDbContext dbContext) : base(dbContext) {}
-
+    
     public async Task AddLikeAsync(Like like)
     {
         await DbContext.Likes.AddAsync(like);
@@ -20,8 +20,13 @@ public sealed class PostRepository : Repository<Post>, IPostRepository
         DbContext.Likes.Remove(like);
         await DbContext.SaveChangesAsync();
     }
-
+    
     public async Task<Like?> GetLikeAsync(Guid userId, Guid postId) =>
         await DbContext.Likes
-            .FirstOrDefaultAsync(like => like.UserId == userId && like.PostId == postId);
+            .FindAsync(userId, postId);
+    
+    public async Task<Post?> GetByIdIncludingComments(Guid id) =>
+        await DbContext.Posts
+            .Include(post => post.Comments)
+            .FirstOrDefaultAsync(post => post.Id == id);
 }

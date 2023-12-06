@@ -12,7 +12,11 @@ public sealed class Post : BaseEntity
     public Guid? AddressId { get; set; }
     public IList<Tag> Tags { get; set; }
     public IList<Like> Likes { get; set; }
+    public IList<Comment> Comments { get; set; }
     
     public User User { get; set;  }
     public required Guid UserId { get; set; }
+    
+    public Community? Community { get; set; }
+    public Guid? CommunityId { get; set; }
 }

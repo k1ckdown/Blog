@@ -38,6 +38,7 @@ public sealed class PostDto : IMapFrom<Domain.Entities.Post>
         profile.CreateMap<Domain.Entities.Post, PostDto>()
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User.FullName))
-            .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count));
+            .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count))
+            .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count));
     }
 }
