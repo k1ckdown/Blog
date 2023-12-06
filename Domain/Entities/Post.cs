@@ -17,6 +17,6 @@ public sealed class Post : BaseEntity
     public User User { get; set;  }
     public required Guid UserId { get; set; }
     
-    public Community Community { get; set; }
+    public Community? Community { get; set; }
     public Guid? CommunityId { get; set; }
 }
