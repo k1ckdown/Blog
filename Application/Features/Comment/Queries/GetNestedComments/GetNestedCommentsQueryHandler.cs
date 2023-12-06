@@ -6,12 +6,16 @@ using MediatR;
 
 namespace Application.Features.Comment.Queries.GetNestedComments;
 
-public sealed class GetNestedCommentsQueryHandler : IRequestHandler<GetNestedCommentsQuery, IEnumerable<CommentDto>>
+public sealed class GetNestedCommentsQueryHandler :
+    BaseCommentRequestHandler, IRequestHandler<GetNestedCommentsQuery, IEnumerable<CommentDto>>
 {
     private readonly IMapper _mapper;
     private readonly ICommentRepository _commentRepository;
 
-    public GetNestedCommentsQueryHandler(IMapper mapper, ICommentRepository commentRepository)
+    public GetNestedCommentsQueryHandler(
+        IMapper mapper,
+        IPostRepository postRepository, 
+        ICommentRepository commentRepository) : base(postRepository)
     {
         _mapper = mapper;
         _commentRepository = commentRepository;
@@ -23,6 +27,8 @@ public sealed class GetNestedCommentsQueryHandler : IRequestHandler<GetNestedCom
         
         if (comment == null) 
             throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
+
+        await CheckAccess(request.UserId, comment.PostId);
         
         if (comment.ParentId != null)
             throw new BadRequestException($"Comment ({request.CommentId}) is not a root element");

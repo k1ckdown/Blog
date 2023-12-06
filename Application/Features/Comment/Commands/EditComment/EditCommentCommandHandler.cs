@@ -4,12 +4,12 @@ using MediatR;
 
 namespace Application.Features.Comment.Commands.EditComment;
 
-public sealed class EditCommentCommandHandler : IRequestHandler<EditCommentCommand>
+public sealed class EditCommentCommandHandler : BaseCommentRequestHandler, IRequestHandler<EditCommentCommand>
 {
     private readonly ICommentRepository _commentRepository;
 
-    public EditCommentCommandHandler(ICommentRepository commentRepository) =>
-        _commentRepository = commentRepository;
+    public EditCommentCommandHandler(IPostRepository postRepository, ICommentRepository commentRepository) 
+        : base(postRepository) => _commentRepository = commentRepository;
     
     public async Task Handle(EditCommentCommand request, CancellationToken cancellationToken)
     {
@@ -17,6 +17,8 @@ public sealed class EditCommentCommandHandler : IRequestHandler<EditCommentComma
 
         if (comment == null)
             throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
+
+        await CheckAccess(request.UserId, comment.PostId);
 
         if (comment.UserId != request.UserId)
             throw new ForbiddenException($"The user ({request.UserId}) is not the author of the comment ({request.CommentId})");

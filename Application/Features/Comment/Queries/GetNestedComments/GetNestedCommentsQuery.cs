@@ -3,4 +3,4 @@ using MediatR;
 
 namespace Application.Features.Comment.Queries.GetNestedComments;
 
-public sealed record GetNestedCommentsQuery(Guid CommentId) : IRequest<IEnumerable<CommentDto>>;
+public sealed record GetNestedCommentsQuery(Guid UserId, Guid CommentId) : IRequest<IEnumerable<CommentDto>>;

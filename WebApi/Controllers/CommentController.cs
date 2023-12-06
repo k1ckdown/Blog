@@ -18,7 +18,7 @@ public sealed class CommentController : BaseController
     [Route("comment/{id:guid}/tree")]
     public async Task<ActionResult<IEnumerable<CommentDto>>> GetNestedComments(Guid id)
     {
-        var getNestedCommentsQuery = new GetNestedCommentsQuery(id);
+        var getNestedCommentsQuery = new GetNestedCommentsQuery(UserId, id);
         var comments = await Mediator.Send(getNestedCommentsQuery);
         return Ok(comments);
     }
