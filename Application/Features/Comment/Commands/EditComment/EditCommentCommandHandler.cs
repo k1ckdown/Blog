@@ -14,14 +14,10 @@ public sealed class EditCommentCommandHandler : BaseCommentRequestHandler, IRequ
     public async Task Handle(EditCommentCommand request, CancellationToken cancellationToken)
     {
         var comment = await _commentRepository.GetByIdAsync(request.CommentId);
-
-        if (comment == null)
-            throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
+        if (comment == null) throw new NotFoundException(nameof(Domain.Entities.Comment), request.CommentId);
 
         await CheckAccess(request.UserId, comment.PostId);
-
-        if (comment.UserId != request.UserId)
-            throw new ForbiddenException($"The user ({request.UserId}) is not the author of the comment ({request.CommentId})");
+        if (request.UserId != comment.UserId) throw new ForbiddenException(request.UserId, request.CommentId);
 
         comment.Content = request.UpdateCommentDto.Content;
         comment.ModifiedDate = DateTime.UtcNow;

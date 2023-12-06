@@ -1,5 +1,6 @@
 using Application.DTOs.Comment;
 using Application.Features.Comment.Commands.CreateComment;
+using Application.Features.Comment.Commands.DeleteComment;
 using Application.Features.Comment.Commands.EditComment;
 using Application.Features.Comment.Queries.GetNestedComments;
 using MediatR;
@@ -40,6 +41,16 @@ public sealed class CommentController : BaseController
     {
         var editCommentCommand = new EditCommentCommand(UserId, id, updateCommentDto);
         await Mediator.Send(editCommentCommand);
+        return Ok();
+    }
+
+    [HttpDelete]
+    [Route("comment/{id:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> DeleteComment(Guid id)
+    {
+        var deleteCommentCommand = new DeleteCommentCommand(UserId, id);
+        await Mediator.Send(deleteCommentCommand);
         return Ok();
     }
 }
