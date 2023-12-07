@@ -36,6 +36,7 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
             .Include(post => post.Tags)
             .Include(post => post.Likes)
             .Include(post => post.Comments)
+            .Include(post => post.Community)
             .ToListAsync(cancellationToken);
         
         var postListDto = _mapper.Map<List<PostDto>>(postList);

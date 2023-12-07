@@ -19,8 +19,7 @@ public sealed class GetCommunityQueryHandler : IRequestHandler<GetCommunityQuery
     
     public async Task<CommunityFullDto> Handle(GetCommunityQuery request, CancellationToken cancellationToken)
     {
-        var community = await _communityRepository.GetByIdAsync(request.CommunityId);
-        
+        var community = await _communityRepository.GetByIdIncludingAllMembersAsync(request.CommunityId);
         if (community == null) throw new NotFoundException(nameof(Community), request.CommunityId);
 
         var communityFullDto = _mapper.Map<CommunityFullDto>(community);

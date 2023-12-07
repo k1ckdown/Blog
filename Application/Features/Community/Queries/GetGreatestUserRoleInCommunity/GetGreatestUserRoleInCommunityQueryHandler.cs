@@ -2,6 +2,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
 
@@ -15,17 +16,21 @@ public sealed class GetGreatestUserRoleInCommunityQueryHandler
 
     public async Task<CommunityRole?> Handle(GetGreatestUserRoleInCommunityQuery request, CancellationToken cancellationToken)
     {
-        var community = await _communityRepository.GetByIdAsync(request.CommunityId);
+        if (await _communityRepository.Entities.AllAsync(
+                community => community.Id != request.CommunityId,
+                cancellationToken: cancellationToken))
+            throw new NotFoundException(nameof(Domain.Entities.Community), request.CommunityId);
 
-        if (community == null)
-            throw new NotFoundException(nameof(Community), request.CommunityId);
-
-        if (community.Administrators.Any(administrator => administrator.Id == request.UserId))
+        if (await _communityRepository.Administrators.AnyAsync(
+                admin => admin.UserId == request.UserId && admin.CommunityId == request.CommunityId,
+                cancellationToken))
             return CommunityRole.Administrator;
 
-        if (community.Subscribers.Any(subscriber => subscriber.Id == request.UserId))
+        if (await _communityRepository.Subscriptions.AnyAsync(
+                subscription => subscription.UserId == request.UserId && subscription.CommunityId == request.CommunityId,
+                cancellationToken: cancellationToken))
             return CommunityRole.Subscriber;
-
+        
         return null;
     }
 }

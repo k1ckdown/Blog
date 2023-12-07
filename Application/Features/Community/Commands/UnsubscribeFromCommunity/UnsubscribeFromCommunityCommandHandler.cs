@@ -1,6 +1,7 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Commands.UnsubscribeFromCommunity;
 
@@ -13,7 +14,9 @@ public sealed class UnsubscribeFromCommunityCommandHandler : IRequestHandler<Uns
 
     public async Task Handle(UnsubscribeFromCommunityCommand request, CancellationToken cancellationToken)
     {
-        if (await _communityRepository.GetByIdAsync(request.CommunityId) == null)
+        if (await _communityRepository.Entities.AllAsync(
+                community => community.Id != request.CommunityId,
+                cancellationToken: cancellationToken))
             throw new NotFoundException(nameof(Domain.Entities.Community), request.CommunityId);
 
         var subscribe = await _communityRepository.GetSubscriptionAsync(request.UserId, request.CommunityId);

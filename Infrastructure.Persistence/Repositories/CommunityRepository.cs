@@ -9,6 +9,9 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
 {
     public CommunityRepository(ApplicationDbContext dbContext) : base(dbContext) {}
 
+    public IQueryable<Subscription> Subscriptions => DbContext.Subscriptions;
+    public IQueryable<CommunityAdmin> Administrators => DbContext.CommunityAdmins;
+
     public async Task<Subscription?> GetSubscriptionAsync(Guid userId, Guid communityId) =>
         await DbContext.Subscriptions.FindAsync(userId, communityId);
 
@@ -24,7 +27,7 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
         await DbContext.SaveChangesAsync();
     }
     
-    public new async Task<Community?> GetByIdAsync(Guid id) =>
+    public async Task<Community?> GetByIdIncludingAllMembersAsync(Guid id) =>
         await DbContext.Communities
             .Include(community => community.Administrators)
             .Include(community => community.Subscribers)

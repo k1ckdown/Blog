@@ -2,6 +2,7 @@ using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Community.Commands.SubscribeToCommunity;
 
@@ -14,10 +15,14 @@ public sealed class SubscribeToCommunityCommandHandler : IRequestHandler<Subscri
 
     public async Task Handle(SubscribeToCommunityCommand request, CancellationToken cancellationToken)
     {
-        if (await _communityRepository.GetByIdAsync(request.CommunityId) == null)
+        if (await _communityRepository.Entities.AllAsync(
+                community => community.Id != request.CommunityId,
+                cancellationToken: cancellationToken))
             throw new NotFoundException(nameof(Domain.Entities.Community), request.CommunityId);
         
-        if (await _communityRepository.GetSubscriptionAsync(request.UserId, request.CommunityId) != null)
+        if (await _communityRepository.Subscriptions.AnyAsync(
+                subscription => subscription.UserId == request.UserId && subscription.CommunityId == request.CommunityId,
+                cancellationToken: cancellationToken))
             throw new BadRequestException(
                 $"The user ({request.UserId}) has already subscribed to the community ({request.CommunityId})");
 

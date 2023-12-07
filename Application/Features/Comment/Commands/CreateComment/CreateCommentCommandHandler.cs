@@ -1,22 +1,32 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
+using Application.Services.Community;
 using MediatR;
 
 namespace Application.Features.Comment.Commands.CreateComment;
 
-public sealed class CreateCommentCommandHandler : BaseCommentRequestHandler, IRequestHandler<CreateCommentCommand>
+public sealed class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand>
 {
+    private readonly IPostRepository _postRepository;
     private readonly ICommentRepository _commentRepository;
+    private readonly ICommunityService _communityService;
 
-    public CreateCommentCommandHandler(IPostRepository postRepository, ICommentRepository commentRepository)
-        : base(postRepository) => _commentRepository = commentRepository;
+    public CreateCommentCommandHandler(
+        IPostRepository postRepository,
+        ICommentRepository commentRepository, 
+        ICommunityService communityService)
+    {
+        _postRepository = postRepository;
+        _commentRepository = commentRepository;
+        _communityService = communityService;
+    }
 
     public async Task Handle(CreateCommentCommand request, CancellationToken cancellationToken)
     {
-        var post = await PostRepository.GetByIdIncludingComments(request.PostId);
+        var post = await _postRepository.GetByIdIncludingComments(request.PostId);
         if (post == null) throw new NotFoundException(nameof(Post), request.PostId);
 
-        CheckAccess(request.UserId, post);
+        await _communityService.CheckAccessToPost(request.UserId, post);
 
         Domain.Entities.Comment? parentComment = null;
         var parentId = request.CreateCommentDto.ParentId;

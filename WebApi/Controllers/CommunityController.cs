@@ -1,4 +1,6 @@
 using Application.DTOs.Community;
+using Application.DTOs.Post;
+using Application.Features.Community.Commands.CreateCommunityPost;
 using Application.Features.Community.Commands.SubscribeToCommunity;
 using Application.Features.Community.Commands.UnsubscribeFromCommunity;
 using Application.Features.Community.Queries.GetCommunity;
@@ -9,6 +11,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
@@ -41,6 +44,16 @@ public sealed class CommunityController : BaseController
         var getCommunityQuery = new GetCommunityQuery(id);
         var communityFullDto = await Mediator.Send(getCommunityQuery);
         return communityFullDto;
+    }
+
+    [HttpPost]
+    [Route("{id:guid}/post")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<Guid>> CreateCommunityPost(Guid id, CreatePostDto createPostDto)
+    {
+        var createCommunityPostCommand = new CreateCommunityPostCommand(UserId, createPostDto, id);
+        var postId = await Mediator.Send(createCommunityPostCommand);
+        return Ok(postId);
     }
 
     [HttpGet]

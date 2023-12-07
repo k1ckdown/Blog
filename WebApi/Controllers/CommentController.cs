@@ -16,6 +16,8 @@ public sealed class CommentController : BaseController
     public CommentController(IMediator mediator) : base(mediator) {}
 
     [HttpGet]
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("comment/{id:guid}/tree")]
     public async Task<ActionResult<IEnumerable<CommentDto>>> GetNestedComments(Guid id)
     {
