@@ -11,13 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace WebApi.Controllers;
 
 [Route("api/")]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public sealed class CommentController : BaseController
 {
     public CommentController(IMediator mediator) : base(mediator) {}
 
     [HttpGet]
     [AllowAnonymous]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("comment/{id:guid}/tree")]
     public async Task<ActionResult<IEnumerable<CommentDto>>> GetNestedComments(Guid id)
     {
@@ -28,7 +28,6 @@ public sealed class CommentController : BaseController
     
     [HttpPost]
     [Route("post/{id:guid}/comment")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> CreateComment(Guid id, CreateCommentDto createCommentDto)
     {
         var createCommentCommand = new CreateCommentCommand(UserId, id, createCommentDto);
@@ -38,7 +37,6 @@ public sealed class CommentController : BaseController
 
     [HttpPut]
     [Route("comment/{id:guid}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> EditComment(Guid id, UpdateCommentDto updateCommentDto)
     {
         var editCommentCommand = new EditCommentCommand(UserId, id, updateCommentDto);
@@ -48,7 +46,6 @@ public sealed class CommentController : BaseController
 
     [HttpDelete]
     [Route("comment/{id:guid}")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteComment(Guid id)
     {
         var deleteCommentCommand = new DeleteCommentCommand(UserId, id);

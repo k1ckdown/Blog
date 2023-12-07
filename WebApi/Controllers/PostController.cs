@@ -11,11 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public sealed class PostController : BaseController
 {
     public PostController(IMediator mediator) : base(mediator) {}
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<PostPagedListDto>> GetPostList([FromQuery] PostSearchParameters parameters)
     {
         var getPostListQuery = new GetPostListQuery(UserId, parameters);
@@ -24,7 +26,6 @@ public sealed class PostController : BaseController
     }
 
     [HttpPost]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult<Guid>> CreatePost(CreatePostDto createPostDto)
     {
         var createPostCommand = new CreatePostCommand(UserId, createPostDto);
@@ -34,7 +35,6 @@ public sealed class PostController : BaseController
 
     [HttpPost]
     [Route("{postId:guid}/like")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> AddLike(Guid postId)
     {
         var likePostCommand = new LikePostCommand(UserId, postId);
@@ -44,7 +44,6 @@ public sealed class PostController : BaseController
 
     [HttpDelete]
     [Route("{postId:guid}/like")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<IActionResult> DeleteLike(Guid postId)
     {
         var dislikePostCommand = new DislikePostCommand(UserId, postId);
