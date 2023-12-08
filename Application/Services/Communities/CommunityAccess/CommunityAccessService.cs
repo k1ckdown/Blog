@@ -24,29 +24,33 @@ public sealed class CommunityAccessService : ICommunityAccessService
         throw new CommunityAccessException(userId, community.Id);
     }
 
-    public Task CheckAccessToPost(Guid userId, Post post)
+    public async Task CheckAccessToPost(Guid userId, Post post)
     {
-        return post.CommunityId == null 
-            ? Task.CompletedTask
-            : CheckAccess(userId, post.CommunityId.Value, post.Id, RestrictedCommunityAccessObjectType.Post);
+        if (post.CommunityId == null) return;
+
+        var community = post.Community ?? await _communityRepository.GetByIdAsync(post.CommunityId.Value);
+        if (community == null) throw new NotFoundException(nameof(Community), post.CommunityId);
+        
+        await CheckAccess(userId, community, post.Id, RestrictedCommunityAccessObjectType.Post);
     }
     
     public async Task CheckAccessToComment(Guid userId, Comment comment)
     {
         var post = await _postRepository.GetByIdAsync(comment.PostId);
-        if (post is { CommunityId: not null })
-            await CheckAccess(userId, post.CommunityId.Value, comment.Id, RestrictedCommunityAccessObjectType.Comment);
+        if (post == null) throw new NotFoundException(nameof(Post), comment.PostId);
+
+        if (post.CommunityId == null) return;
+        
+        var community = await _communityRepository.GetByIdAsync(post.CommunityId.Value);
+        if (community == null) throw new NotFoundException(nameof(Community), post.CommunityId);
+        
+        await CheckAccess(userId, community, comment.Id, RestrictedCommunityAccessObjectType.Comment);
     }
     
     private async Task CheckAccess(
-        Guid userId,
-        Guid communityId,
-        Guid objectId,
+        Guid userId, Community community, Guid objectId,
         RestrictedCommunityAccessObjectType objectType)
     {
-        var community = await _communityRepository.GetByIdAsync(communityId);
-        if (community == null) throw new NotFoundException(nameof(Community), communityId);
-        
         if (await IsAccessAllowed(userId, community)) return;
         throw new CommunityAccessException(userId, objectId, objectType);
     }

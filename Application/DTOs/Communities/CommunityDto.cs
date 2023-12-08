@@ -30,6 +30,7 @@ public class CommunityDto : IMapFrom<Community>
     public virtual void Mapping(Profile profile)
     {
         profile.CreateMap<Community, CommunityDto>()
+            .IncludeAllDerived()
             .ForMember(dest => dest.SubscribersCount, opt => opt.MapFrom(src => src.Subscribers.Count));
     }
 }

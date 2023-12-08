@@ -29,4 +29,14 @@ public sealed class PostRepository : Repository<Post>, IPostRepository
         await DbContext.Posts
             .Include(post => post.Comments)
             .FirstOrDefaultAsync(post => post.Id == id);
+
+    public async Task<Post?> GetByIdIncludingAllAsync(Guid id) =>
+        await DbContext.Posts
+            .Include(post => post.User)
+            .Include(post => post.Likes)
+            .Include(post => post.Community)
+            .Include(post => post.Tags)
+            .Include(post => post.Comments)
+                .ThenInclude(comment => comment.User)
+            .FirstOrDefaultAsync(post => post.Id == id);
 }

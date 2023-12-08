@@ -1,4 +1,3 @@
-using Application.Common.Exceptions;
 using Application.Common.Exceptions.Base;
 using Application.Common.Extensions;
 using Application.Common.Interfaces.Repositories;
@@ -59,7 +58,11 @@ public sealed class PostService : IPostService
     {
         var (pagedPosts, totalPages) = posts.ToPaged(page, size);
         var pagedList = await pagedPosts
-            .IncludeAll()
+            .Include(post => post.User)
+            .Include(post => post.Tags)
+            .Include(post => post.Likes)
+            .Include(post => post.Comments)
+            .Include(post => post.Community)
             .ToListAsync();
 
         var postListDto = _mapper.Map<List<PostDto>>(pagedList);
