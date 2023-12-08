@@ -2,6 +2,7 @@ using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
 using Application.Common.Exceptions;
+using Application.Common.Exceptions.Base;
 using Application.Wrappers;
 
 namespace WebApi.Middlewares;

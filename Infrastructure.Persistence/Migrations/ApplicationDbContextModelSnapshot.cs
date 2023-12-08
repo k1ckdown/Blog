@@ -58,7 +58,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Community", b =>
@@ -82,7 +82,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Communities");
+                    b.ToTable("Communities", (string)null);
 
                     b.HasData(
                         new
@@ -139,7 +139,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CommunityAdmins");
+                    b.ToTable("CommunityAdmins", (string)null);
 
                     b.HasData(
                         new
@@ -191,7 +191,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Post", b =>
@@ -232,7 +232,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Subscription", b =>
@@ -247,7 +247,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("CommunityId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Tag", b =>
@@ -265,7 +265,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
 
                     b.HasData(
                         new
@@ -358,7 +358,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PostTag", b =>
@@ -373,7 +373,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("PostTag");
+                    b.ToTable("PostTag", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Comment", b =>
