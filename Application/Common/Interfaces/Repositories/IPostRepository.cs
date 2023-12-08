@@ -8,5 +8,4 @@ public interface IPostRepository : IRepository<Post>
     Task DeleteLikeAsync(Like like);
     Task<Like?> GetLikeAsync(Guid userId, Guid postId);
     Task<Post?> GetByIdIncludingComments(Guid id);
-    Task<Post?> GetByIdIncludingCommunity(Guid id);
 }

@@ -1,9 +1,8 @@
-using Application.DTOs.Post;
-using Application.Features.Post.Commands;
-using Application.Features.Post.Commands.CreatePost;
-using Application.Features.Post.Commands.DislikePost;
-using Application.Features.Post.Commands.LikePost;
-using Application.Features.Post.Queries.GetPostList;
+using Application.DTOs.Posts;
+using Application.Features.Posts.Commands.CreatePost;
+using Application.Features.Posts.Commands.DislikePost;
+using Application.Features.Posts.Commands.LikePost;
+using Application.Features.Posts.Queries.GetPostList;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +21,7 @@ public sealed class PostController : BaseController
     {
         var getPostListQuery = new GetPostListQuery(UserId, parameters);
         var pagedList = await Mediator.Send(getPostListQuery);
-        return pagedList;
+        return Ok(pagedList);
     }
 
     [HttpPost]
@@ -30,7 +29,7 @@ public sealed class PostController : BaseController
     {
         var createPostCommand = new CreatePostCommand(UserId, createPostDto);
         var postId = await Mediator.Send(createPostCommand);
-        return postId;
+        return Ok(postId);
     }
 
     [HttpPost]

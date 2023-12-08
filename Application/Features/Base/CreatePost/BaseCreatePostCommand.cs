@@ -1,4 +1,4 @@
-using Application.DTOs.Post;
+using Application.DTOs.Posts;
 using MediatR;
 
 namespace Application.Features.Base.CreatePost;

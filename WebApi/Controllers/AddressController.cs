@@ -1,6 +1,6 @@
-using Application.DTOs.Address;
-using Application.Features.Address.Queries.GetAddressChain;
-using Application.Features.Address.Queries.SearchAddress;
+using Application.DTOs.Addresses;
+using Application.Features.Addresses.Queries.GetAddressChain;
+using Application.Features.Addresses.Queries.SearchAddress;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

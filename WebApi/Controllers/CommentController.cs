@@ -1,8 +1,8 @@
-using Application.DTOs.Comment;
-using Application.Features.Comment.Commands.CreateComment;
-using Application.Features.Comment.Commands.DeleteComment;
-using Application.Features.Comment.Commands.EditComment;
-using Application.Features.Comment.Queries.GetNestedComments;
+using Application.DTOs.Comments;
+using Application.Features.Comments.Commands.CreateComment;
+using Application.Features.Comments.Commands.DeleteComment;
+using Application.Features.Comments.Commands.EditComment;
+using Application.Features.Comments.Queries.GetNestedComments;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

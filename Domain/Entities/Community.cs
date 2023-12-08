@@ -9,7 +9,6 @@ public sealed class Community : BaseEntity
     public required bool IsClosed { get; set; }
     public required DateTime CreateTime { get; set; }
     
-    public IList<Post> Posts { get; set; }
-    public IList<User> Subscribers { get; set; }
-    public IList<User> Administrators { get; set; }
+    public IList<User>? Subscribers { get; set; }
+    public IList<User>? Administrators { get; set; }
 }

@@ -29,9 +29,4 @@ public sealed class PostRepository : Repository<Post>, IPostRepository
         await DbContext.Posts
             .Include(post => post.Comments)
             .FirstOrDefaultAsync(post => post.Id == id);
-    
-    public async Task<Post?> GetByIdIncludingCommunity(Guid id) =>
-        await DbContext.Posts
-            .Include(post => post.Community)
-            .FirstOrDefaultAsync(post => post.Id == id);
 }

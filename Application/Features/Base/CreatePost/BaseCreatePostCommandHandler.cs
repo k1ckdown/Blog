@@ -1,6 +1,7 @@
 using Application.Common.Exceptions;
 using Application.Common.Interfaces.Repositories;
-using Application.Features.Community.Commands.CreateCommunityPost;
+using Application.Features.Communities.Commands.CreateCommunityPost;
+using Domain.Entities;
 using MediatR;
 
 namespace Application.Features.Base.CreatePost;
@@ -32,7 +33,7 @@ public abstract class BaseCreatePostCommandHandler<TRequest>
         
         var tags = await GetTagList(request.CreatePostDto.Tags);
         
-        var post = new Domain.Entities.Post
+        var post = new Post
         {
             Title = request.CreatePostDto.Title,
             Description = request.CreatePostDto.Description,
@@ -49,9 +50,9 @@ public abstract class BaseCreatePostCommandHandler<TRequest>
         return post.Id;
     }
     
-    private async Task<List<Domain.Entities.Tag>> GetTagList(IEnumerable<Guid> tagIdentifiers)
+    private async Task<List<Tag>> GetTagList(IEnumerable<Guid> tagIdentifiers)
     {
-        var tags = new List<Domain.Entities.Tag>();
+        var tags = new List<Tag>();
         
         foreach (var id in tagIdentifiers)
         {
