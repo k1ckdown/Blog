@@ -1,10 +1,13 @@
-using Application.DTOs.Community;
-using Application.Features.Community.Commands.SubscribeToCommunity;
-using Application.Features.Community.Commands.UnsubscribeFromCommunity;
-using Application.Features.Community.Queries.GetCommunity;
-using Application.Features.Community.Queries.GetCommunityList;
-using Application.Features.Community.Queries.GetGreatestUserRoleInCommunity;
-using Application.Features.Community.Queries.GetUserCommunities;
+using Application.DTOs.Communities;
+using Application.DTOs.Posts;
+using Application.Features.Communities.Commands.CreateCommunityPost;
+using Application.Features.Communities.Commands.SubscribeToCommunity;
+using Application.Features.Communities.Commands.UnsubscribeFromCommunity;
+using Application.Features.Communities.Queries.GetCommunity;
+using Application.Features.Communities.Queries.GetCommunityList;
+using Application.Features.Communities.Queries.GetCommunityPostList;
+using Application.Features.Communities.Queries.GetGreatestUserRoleInCommunity;
+using Application.Features.Communities.Queries.GetUserCommunities;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,7 +43,28 @@ public sealed class CommunityController : BaseController
     {
         var getCommunityQuery = new GetCommunityQuery(id);
         var communityFullDto = await Mediator.Send(getCommunityQuery);
-        return communityFullDto;
+        return Ok(communityFullDto);
+    }
+    
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("{id:guid}/post")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<PostPagedListDto>> GetCommunityPostList(Guid id, [FromQuery] CommunityPostSearchParameters parameters)
+    {
+        var getCommunityPostListQuery = new GetCommunityPostListQuery(UserId, id, parameters);
+        var postId = await Mediator.Send(getCommunityPostListQuery);
+        return Ok(postId);
+    }
+
+    [HttpPost]
+    [Route("{id:guid}/post")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<Guid>> CreateCommunityPost(Guid id, CreatePostDto createPostDto)
+    {
+        var createCommunityPostCommand = new CreateCommunityPostCommand(UserId, createPostDto, id);
+        var postId = await Mediator.Send(createCommunityPostCommand);
+        return Ok(postId);
     }
 
     [HttpGet]

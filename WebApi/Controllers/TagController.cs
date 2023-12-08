@@ -1,5 +1,5 @@
-using Application.DTOs.Post;
-using Application.Features.Tag.Queries.GetTagList;
+using Application.DTOs.Posts;
+using Application.Features.Tags.Queries.GetTagList;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
