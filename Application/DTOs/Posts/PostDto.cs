@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Application.DTOs.Posts;
 
-public sealed class PostDto : IMapFrom<Post>
+public class PostDto : IMapFrom<Post>
 {
     public required Guid Id { get; set; }
     public required DateTime CreateTime { get; set; }
@@ -34,12 +34,13 @@ public sealed class PostDto : IMapFrom<Post>
     private const bool DefaultHasLike = false;
     private const int DefaultCommentsCount = 0;
 
-    public void Mapping(Profile profile)
+    public virtual void Mapping(Profile profile)
     {
         profile.CreateMap<Post, PostDto>()
+            .IncludeAllDerived()
+            .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count))
             .ForMember(dest => dest.AuthorId, opt => opt.MapFrom(src => src.UserId))
             .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.User.FullName))
-            .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes.Count))
             .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count))
             .ForMember(dest => dest.CommunityName,
                 opt => opt.MapFrom(src => src.Community == null ? null : src.Community.Name));

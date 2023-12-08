@@ -2,6 +2,7 @@ using Application.DTOs.Posts;
 using Application.Features.Posts.Commands.CreatePost;
 using Application.Features.Posts.Commands.DislikePost;
 using Application.Features.Posts.Commands.LikePost;
+using Application.Features.Posts.Queries.GetPost;
 using Application.Features.Posts.Queries.GetPostList;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,6 +31,15 @@ public sealed class PostController : BaseController
         var createPostCommand = new CreatePostCommand(UserId, createPostDto);
         var postId = await Mediator.Send(createPostCommand);
         return Ok(postId);
+    }
+
+    [HttpGet("{id:guid}")]
+    [AllowAnonymous]
+    public async Task<ActionResult<PostFullDto>> GetPost(Guid id)
+    {
+        var getPostQuery = new GetPostQuery(UserId, id);
+        var postFullDto = await Mediator.Send(getPostQuery);
+        return Ok(postFullDto);
     }
 
     [HttpPost]
