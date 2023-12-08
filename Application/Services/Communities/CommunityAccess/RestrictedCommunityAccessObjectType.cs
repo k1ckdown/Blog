@@ -1,6 +1,6 @@
 namespace Application.Services.Communities.CommunityAccess;
 
-internal enum RestrictedCommunityAccessObjectType
+public enum RestrictedCommunityAccessObjectType
 {
     Post,
     Comment

@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Exceptions.Base;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Application.Services.Communities;
@@ -24,7 +25,7 @@ public sealed class EditCommentCommandHandler : IRequestHandler<EditCommentComma
         if (comment == null) throw new NotFoundException(nameof(Comment), request.CommentId);
 
         await _communityAccessService.CheckAccessToComment(request.UserId, comment);
-        if (request.UserId != comment.UserId) throw new ForbiddenException(request.UserId, request.CommentId);
+        if (request.UserId != comment.UserId) throw new AuthorCommentException(request.UserId, request.CommentId);
 
         comment.Content = request.UpdateCommentDto.Content;
         comment.ModifiedDate = DateTime.UtcNow;

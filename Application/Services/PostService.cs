@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Exceptions.Base;
 using Application.Common.Extensions;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
@@ -21,10 +22,8 @@ public sealed class PostService : IPostService
         _tagRepository = tagRepository;
     }
 
-    public IQueryable<Post> FilterByAuthor(IQueryable<Post> posts, string author)
-    {
-        return posts.Where(post => post.User.FullName.ToLower().Contains(author.ToLower()));
-    }
+    public IQueryable<Post> FilterByAuthor(IQueryable<Post> posts, string author) =>
+        posts.Where(post => post.User.FullName.ToLower().Contains(author.ToLower()));
 
     public IQueryable<Post> FilterByMinReadingTime(IQueryable<Post> posts, int minTime) =>
         posts.Where(post => post.ReadingTime >= minTime);

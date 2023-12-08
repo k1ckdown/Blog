@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Exceptions.Base;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

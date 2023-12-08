@@ -1,4 +1,5 @@
 using Application.Common.Exceptions;
+using Application.Common.Exceptions.Base;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Domain.Entities;
@@ -20,7 +21,7 @@ public sealed class CommunityAccessService : ICommunityAccessService
     public async Task CheckAccess(Guid userId, Community community)
     {
         if (await IsAccessAllowed(userId, community)) return;
-        throw new ForbiddenException($"Access to closed community ({community.Id}) is forbidden for user ({userId})");
+        throw new CommunityAccessException(userId, community.Id);
     }
 
     public Task CheckAccessToPost(Guid userId, Post post)
@@ -47,8 +48,7 @@ public sealed class CommunityAccessService : ICommunityAccessService
         if (community == null) throw new NotFoundException(nameof(Community), communityId);
         
         if (await IsAccessAllowed(userId, community)) return;
-        throw new ForbiddenException(
-            $"Access to closed community {objectType.ToString().ToLower()} ({objectId}) is forbidden for user ({userId})");
+        throw new CommunityAccessException(userId, objectId, objectType);
     }
 
     private async Task<bool> IsAccessAllowed(Guid userId, Community community)

@@ -1,6 +1,6 @@
-namespace Application.Common.Exceptions;
+namespace Application.Common.Exceptions.Base;
 
-public sealed class BadRequestException : Exception
+public class BadRequestException : Exception
 {
     public BadRequestException() {}
     
