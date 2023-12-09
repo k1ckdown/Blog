@@ -1,6 +1,7 @@
 using Application.Common.Interfaces.Repositories;
 using Application.DTOs.Addresses;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,25 +27,22 @@ public sealed class SearchAddressQueryHandler : IRequestHandler<SearchAddressQue
         if (request.Query == null) hierarchies = hierarchies.Take(10);
 
         var addressElements = await hierarchies
-            .Join(_addressRepository.AddressElements,
-                hierarchy => hierarchy.ObjectId,
-                address => address.ObjectId,
-                (hierarchy, address) => _mapper.Map<SearchAddressModel>(address))
-            .ToListAsync(cancellationToken: cancellationToken);
+            .SelectMany(hierarchy =>
+                _addressRepository.AddressElements.Where(element => element.ObjectId == hierarchy.ObjectId))
+            .ProjectTo<SearchAddressModel>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
         var houses = await hierarchies
-            .Join(_addressRepository.Houses,
-                hierarchy => hierarchy.ObjectId,
-                house => house.ObjectId,
-                (hierarchy, house) => _mapper.Map<SearchAddressModel>(house))
-            .ToListAsync(cancellationToken: cancellationToken);
+            .SelectMany(hierarchy =>
+                _addressRepository.AddressElements.Where(house => house.ObjectId == hierarchy.ObjectId))
+            .ProjectTo<SearchAddressModel>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
-        var result = addressElements.Concat(houses);
-
+        var searchAddressed = addressElements.Concat(houses);
         if (request.Query != null)
-            result = result.Where(address =>
+            searchAddressed = searchAddressed.Where(address =>
                 address.Text != null && address.Text.ToLower().Contains(request.Query.ToLower()));
-
-        return result;
+        
+        return searchAddressed;
     }
 }
