@@ -1,5 +1,4 @@
 using System.Security.Authentication;
-using Application.Common.Exceptions;
 using Application.Common.Exceptions.Base;
 using Application.Common.Interfaces.Services;
 using Application.DTOs.Account;

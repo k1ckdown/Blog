@@ -12,13 +12,9 @@ public sealed class AddressRepository : IAddressRepository
     public AddressRepository(AddressesDbContext dbContext) =>
         _dbContext = dbContext;
 
+    public IQueryable<House> Houses => _dbContext.Houses;
+    public IQueryable<AddressElement> AddressElements => _dbContext.AddressElements;
     public IQueryable<AddressHierarchy> Hierarchies => _dbContext.AddressHierarchies;
-
-    public IQueryable<House> Houses =>
-        _dbContext.Houses.Where(house => house.IsActual == 1);
-
-    public IQueryable<AddressElement> AddressElements =>
-        _dbContext.AddressElements.Where(address => address.IsActual == 1);
 
     public async Task<House?> GetHouseAsync(long objectId) =>
         await Houses
