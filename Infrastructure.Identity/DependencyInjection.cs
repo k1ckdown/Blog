@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using Application.Common.Interfaces.Services;
 using Infrastructure.Identity.Authentication;
 using Infrastructure.Identity.Authentication.ConfigureOptions;
@@ -14,11 +15,20 @@ public static class DependencyInjection
     {
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
 
-        services.ConfigureOptions<ConfigureIdentityOptions>();
         services.ConfigureOptions<ConfigureJwtOptions>();
         services.ConfigureOptions<ConfigureJwtBearerOptions>();
 
         services.AddScoped<JwtProvider>();
-        services.AddScoped<IAccountService, AccountService>();
+        services.AddScoped<JwtSecurityTokenHandler>();
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddRedis(configuration);
+    }
+
+    private static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = configuration.GetConnectionString("RedisConnection");
+        });
     }
 }

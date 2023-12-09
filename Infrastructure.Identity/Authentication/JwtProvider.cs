@@ -10,29 +10,49 @@ namespace Infrastructure.Identity.Authentication;
 internal sealed class JwtProvider
 {
     private readonly JwtOptions _jwtOptions;
+    private readonly JwtSecurityTokenHandler _tokenHandler;
 
-    public JwtProvider(IOptions<JwtOptions> jwtOptions) =>
+    public JwtProvider(IOptions<JwtOptions> jwtOptions, JwtSecurityTokenHandler tokenHandler)
+    {
         _jwtOptions = jwtOptions.Value;
+        _tokenHandler = tokenHandler;
+    }
 
-    public string Generate(User user)
+    public DateTime GetExpiration(string token)
+    {
+        var securityToken = _tokenHandler.ReadToken(token) as JwtSecurityToken;
+        return securityToken?.ValidTo ?? DateTime.UtcNow.AddMinutes(_jwtOptions.LifeTimeInMinutes);
+    }
+    
+    public string GetIdFromToken(string accessToken)
+    {
+        var jsonToken = _tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
+        var tokenId = jsonToken?.Payload[JwtRegisteredClaimNames.Jti]?.ToString();
+        
+        return tokenId ?? "";
+    }
+    
+    public (string, DateTime) Generate(User user)
     {
         var claims = new Claim[]
         {
             new (JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-            new (JwtRegisteredClaimNames.Email, user.Email ?? ""),
-            new (JwtRegisteredClaimNames.Jti, new Guid().ToString())
+            new (JwtRegisteredClaimNames.Email, user.Email),
+            new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
         var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        
+
+        var expires = DateTime.UtcNow.AddMinutes(_jwtOptions.LifeTimeInMinutes);
         var token = new JwtSecurityToken(
             issuer: _jwtOptions.Issuer,
             audience: _jwtOptions.Audience,
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(_jwtOptions.DurationInMinutes), 
+            expires: expires, 
             signingCredentials: signingCredentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var serializedToken = _tokenHandler.WriteToken(token);
+        return (serializedToken, expires);
     }
 }

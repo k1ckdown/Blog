@@ -14,6 +14,7 @@ builder.Services.AddIdentityInfrastructure(builder.Configuration);
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+builder.Services.AddTransient<JwtSessionMiddleware>();
 builder.Services.AddControllers(opt =>
     {
         opt.OutputFormatters.RemoveType<HttpNoContentOutputFormatter>();
@@ -68,6 +69,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseMiddleware<JwtSessionMiddleware>();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapControllers();
 

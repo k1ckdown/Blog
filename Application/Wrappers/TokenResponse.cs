@@ -1,3 +1,3 @@
 namespace Application.Wrappers;
 
-public sealed record TokenResponse(string Token);
+public sealed record TokenResponse(string AccessToken, string RefreshToken, DateTime ExpiresAt);

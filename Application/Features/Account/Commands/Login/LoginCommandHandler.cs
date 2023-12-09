@@ -6,15 +6,15 @@ namespace Application.Features.Account.Commands.Login;
 
 public sealed class LoginCommandHandler : IRequestHandler<LoginCommand, TokenResponse>
 {
-    private readonly IAccountService _accountService;
+    private readonly IAuthService _authService;
 
-    public LoginCommandHandler(IAccountService accountService)
+    public LoginCommandHandler(IAuthService authService)
     {
-        _accountService = accountService;
+        _authService = authService;
     }
 
     public async Task<TokenResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        return await _accountService.LogIn(request.Credentials);
+        return await _authService.LogIn(request.Credentials);
     }
 }

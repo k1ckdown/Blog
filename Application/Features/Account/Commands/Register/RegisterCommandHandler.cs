@@ -7,10 +7,10 @@ namespace Application.Features.Account.Commands.Register;
 
 public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, TokenResponse>
 {
-    private readonly IAccountService _accountService;
+    private readonly IAuthService _authService;
 
-    public RegisterCommandHandler(IAccountService accountService) => 
-        _accountService = accountService;
+    public RegisterCommandHandler(IAuthService authService) => 
+        _authService = authService;
 
     public async Task<TokenResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
@@ -24,7 +24,7 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, To
             PhoneNumber = request.RegisterModel.PhoneNumber
         };
         
-        var tokenResponse = await _accountService.Register(user, request.RegisterModel.Password);
+        var tokenResponse = await _authService.Register(user, request.RegisterModel.Password);
         return tokenResponse;
     }
 }
