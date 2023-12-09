@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Infrastructure.Identity.Models;
+using Domain.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -14,7 +14,7 @@ internal sealed class JwtProvider
     public JwtProvider(IOptions<JwtOptions> jwtOptions) =>
         _jwtOptions = jwtOptions.Value;
 
-    public string Generate(ApplicationUser user)
+    public string Generate(User user)
     {
         var claims = new Claim[]
         {

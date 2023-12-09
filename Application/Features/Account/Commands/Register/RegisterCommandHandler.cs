@@ -1,4 +1,3 @@
-using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
 using Application.Wrappers;
 using Domain.Entities;
@@ -9,21 +8,14 @@ namespace Application.Features.Account.Commands.Register;
 public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, TokenResponse>
 {
     private readonly IAccountService _accountService;
-    private readonly IUserRepository _userRepository;
 
-    public RegisterCommandHandler(IAccountService accountService, IUserRepository userRepository)
-    {
+    public RegisterCommandHandler(IAccountService accountService) => 
         _accountService = accountService;
-        _userRepository = userRepository;
-    }
 
     public async Task<TokenResponse> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var (tokenResponse, userId) = await _accountService.Register(request.RegisterModel);
-        
         var user = new User
         {
-            Id = userId,
             CreateTime = DateTime.UtcNow,
             Email = request.RegisterModel.Email,
             Gender = request.RegisterModel.Gender,
@@ -31,8 +23,8 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, To
             BirthDate = request.RegisterModel.BirthDate,
             PhoneNumber = request.RegisterModel.PhoneNumber
         };
-        await _userRepository.AddAsync(user);
         
+        var tokenResponse = await _accountService.Register(user, request.RegisterModel.Password);
         return tokenResponse;
     }
 }
