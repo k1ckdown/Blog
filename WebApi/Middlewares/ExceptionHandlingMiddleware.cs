@@ -30,8 +30,7 @@ public sealed class ExceptionHandlingMiddleware : IMiddleware
                 NotFoundException => HttpStatusCode.NotFound,
                 ForbiddenException => HttpStatusCode.Forbidden,
                 BadRequestException => HttpStatusCode.BadRequest,
-                InvalidCredentialException => HttpStatusCode.Unauthorized,
-                UnauthorizedAccessException => HttpStatusCode.Unauthorized,
+                AuthenticationException => HttpStatusCode.Unauthorized,
                 _ => HttpStatusCode.InternalServerError
             };
 

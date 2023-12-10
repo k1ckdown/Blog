@@ -1,5 +1,5 @@
 using System.Security.Authentication;
-using System.Security.Cryptography;
+using Application.Common.Exceptions;
 using Application.Common.Exceptions.Base;
 using Application.Common.Interfaces.Repositories;
 using Application.Common.Interfaces.Services;
@@ -27,16 +27,17 @@ internal sealed class AuthService : IAuthService
 
     public async Task<bool> IsRevoked(string token)
     {
-        var tokenId = _jwtProvider.GetTokenId(token);
+        var tokenId = _jwtProvider.GetSessionId(token);
         return await _cache.GetStringAsync(BlacklistedKey(tokenId)) != null;
     }
 
     public async Task LogOut(string token)
     {
-        var tokenId = _jwtProvider.GetTokenId(token);
-        var expiration = _jwtProvider.GetExpiration(token);
-        
-        await _cache.SetStringAsync(BlacklistedKey(tokenId), "revoked", new DistributedCacheEntryOptions
+        var sessionId = _jwtProvider.GetSessionId(token);
+        var expiration = _jwtProvider.GetRefreshExpiration(token);
+
+        await _cache.RemoveAsync(sessionId);
+        await _cache.SetStringAsync(BlacklistedKey(sessionId), "revoked", new DistributedCacheEntryOptions
         {
             AbsoluteExpiration = expiration
         });
@@ -67,36 +68,43 @@ internal sealed class AuthService : IAuthService
         return await GetTokenResponse(user);
     }
 
-    public async Task<TokenResponse> Refresh(RefreshTokenRequest request)
+    public async Task<TokenResponse> Refresh(string refreshToken)
     {
-        var userId = await _cache.GetStringAsync(request.Token);
-        if (userId == null) throw new UnauthorizedAccessException("Invalid Refresh Token");
+        var tokenId = _jwtProvider.GetSessionId(refreshToken);
+        var cachedRefreshToken = await _cache.GetStringAsync(tokenId);
+
+        if (string.IsNullOrEmpty(cachedRefreshToken) || refreshToken != cachedRefreshToken)
+            throw new InvalidTokenException();
         
-        var user = await _userRepository.GetByIdAsync(new Guid(userId));
-        if (user == null) throw new NotFoundException(nameof(User), userId);
-
-        await _cache.RemoveAsync(request.Token);
-        return await GetTokenResponse(user);
-    }
-
-    private async Task<TokenResponse> GetTokenResponse(User user)
-    {
-        var (token, expiresAt)  = _jwtProvider.Generate(user);
-        var refreshToken = await GenerateRefreshToken(user.Id);
-
-        return new TokenResponse(token, refreshToken, expiresAt);
+        await _cache.RemoveAsync(tokenId);
+        return await GetRefreshTokenResponse(refreshToken);
     }
     
-    private async Task<string> GenerateRefreshToken(Guid userId)
+    private async Task<TokenResponse> GetTokenResponse(User user)
     {
-        var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-        await _cache.SetStringAsync(refreshToken, userId.ToString(), new DistributedCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(60)
-        });
-
-        return refreshToken;
+        var sessionId = Guid.NewGuid().ToString();
+        var tokenResponse = _jwtProvider.GetTokenResponse(user, sessionId);
+        
+        await CacheRefreshToken(sessionId, tokenResponse.RefreshToken, tokenResponse.RefreshExpiresAt);
+        return tokenResponse;
+    }
+    
+    private async Task<TokenResponse> GetRefreshTokenResponse(string refreshToken)
+    {
+        var sessionId = Guid.NewGuid().ToString();
+        var tokenResponse = _jwtProvider.GetRefreshTokenResponse(refreshToken, sessionId);
+        
+        await CacheRefreshToken(sessionId, tokenResponse.RefreshToken, tokenResponse.RefreshExpiresAt);
+        return tokenResponse;
     }
 
+    private async Task CacheRefreshToken(string sessionId, string token, DateTime expiration)
+    {
+        await _cache.SetStringAsync(sessionId, token, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = expiration
+        });
+    }
+    
     private static string BlacklistedKey(string token) => $"blacklisted {token}";
 }

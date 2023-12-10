@@ -13,6 +13,6 @@ public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCom
 
     public async Task<TokenResponse> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
     {
-        return await _authService.Refresh(request.RefreshTokenRequest);
+        return await _authService.Refresh(request.RefreshTokenRequest.Token);
     }
 }

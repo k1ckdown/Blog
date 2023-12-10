@@ -10,5 +10,5 @@ public interface IAuthService
     Task LogOut(string token);
     Task<TokenResponse> LogIn(LoginCredentials credentials);
     Task<TokenResponse> Register(User user, string password);
-    Task<TokenResponse> Refresh(RefreshTokenRequest request);
+    Task<TokenResponse> Refresh(string refreshToken);
 }
