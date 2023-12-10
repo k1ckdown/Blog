@@ -17,7 +17,7 @@ public sealed class AddressesDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.ApplyConfiguration(new HouseConfiguration());
-        modelBuilder.ApplyConfiguration(new AddressConfiguration());
+        modelBuilder.ApplyConfiguration(new AddressElementConfiguration());
         modelBuilder.ApplyConfiguration(new AddressHierarchyConfiguration());
     }
 }

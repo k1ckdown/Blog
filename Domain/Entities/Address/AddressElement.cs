@@ -9,8 +9,5 @@ public sealed class AddressElement
     public required string Name { get; set; }
     public required string TypeName { get; set; }
     
-    public int IsActual { get; set; }
-    public int IsActive { get; set; }
-    
     public required string Level { get; set; }
 }

@@ -6,16 +6,16 @@ namespace Application.Features.Account.Commands.Logout;
 
 public sealed class LogoutCommandHandler : IRequestHandler<LogoutCommand, Response>
 {
-    private readonly IAccountService _accountService;
+    private readonly IAuthService _authService;
 
-    public LogoutCommandHandler(IAccountService accountService)
+    public LogoutCommandHandler(IAuthService authService)
     {
-        _accountService = accountService;
+        _authService = authService;
     }
     
     public async Task<Response> Handle(LogoutCommand request, CancellationToken cancellationToken)
     {
-        await _accountService.LogOut();
+        await _authService.LogOut(request.Token);
         return new Response(null, "Logged Out");
     }
 }

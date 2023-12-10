@@ -11,9 +11,6 @@ public sealed class House
     public string? Number { get; set; }
     public HouseType? Type { get; set; }
     
-    public int IsActual { get; set; }
-    public int IsActive { get; set; }
-    
     public string? FirstAdditionalNumber { get; set; }
     public string? SecondAdditionalNumber { get; set; }
     

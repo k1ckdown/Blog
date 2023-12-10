@@ -1,7 +1,6 @@
 using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
-using Application.Common.Exceptions;
 using Application.Common.Exceptions.Base;
 using Application.Wrappers;
 
@@ -31,7 +30,7 @@ public sealed class ExceptionHandlingMiddleware : IMiddleware
                 NotFoundException => HttpStatusCode.NotFound,
                 ForbiddenException => HttpStatusCode.Forbidden,
                 BadRequestException => HttpStatusCode.BadRequest,
-                InvalidCredentialException => HttpStatusCode.Unauthorized,
+                AuthenticationException => HttpStatusCode.Unauthorized,
                 _ => HttpStatusCode.InternalServerError
             };
 

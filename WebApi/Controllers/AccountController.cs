@@ -2,6 +2,7 @@ using Application.DTOs.Account;
 using Application.Features.Account.Commands.EditUser;
 using Application.Features.Account.Commands.Login;
 using Application.Features.Account.Commands.Logout;
+using Application.Features.Account.Commands.RefreshToken;
 using Application.Features.Account.Commands.Register;
 using Application.Features.Account.Queries.GetUser;
 using Application.Wrappers;
@@ -9,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WebApi.Extensions;
 
 namespace WebApi.Controllers;
 
@@ -39,8 +41,9 @@ public sealed class AccountController : BaseController
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public async Task<ActionResult<Response>> LogOut()
     {
-        var logoutCommand = new LogoutCommand();
+        var logoutCommand = new LogoutCommand(Request.BearerToken());
         var response = await Mediator.Send(logoutCommand);
+        
         return Ok(response);
     }
 
@@ -62,5 +65,14 @@ public sealed class AccountController : BaseController
         var editUserCommand = new EditUserCommand(UserId, editModel);
         await Mediator.Send(editUserCommand);
         return Ok();
+    }
+
+    [HttpPost]
+    [Route("refresh")]
+    public async Task<ActionResult<TokenResponse>> Refresh(RefreshTokenRequest request)
+    {
+        var refreshTokenCommand = new RefreshTokenCommand(request);
+        var tokenResponse = await Mediator.Send(refreshTokenCommand);
+        return Ok(tokenResponse);
     }
 }
