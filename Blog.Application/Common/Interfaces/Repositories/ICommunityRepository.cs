@@ -6,8 +6,8 @@ public interface ICommunityRepository : IRepository<Community>
 {
     IQueryable<Subscription> Subscriptions { get; }
     IQueryable<CommunityAdmin> Administrators { get; }
-    Task<Community?> GetByIdIncludingAllMembersAsync(Guid id);
     Task AddSubscriptionAsync(Subscription subscription);
-    Task DeleteSubscriptionAsync(Subscription subscription);
-    Task<Subscription?> GetSubscriptionAsync(Guid userId, Guid communityId);
+    Task<Community?> GetByIdIncludingSubscribersAsync(Guid id);
+    Task<Community?> GetByIdIncludingAllMembersAsync(Guid id);
+    Task<Community?> GetByIdIncludingRequestsAndSubscribersAsync(Guid id);
 }
