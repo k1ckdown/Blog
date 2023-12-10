@@ -1,3 +1,4 @@
+using Blog.Application.Common.Exceptions;
 using Blog.Application.Common.Exceptions.Base;
 using Blog.Application.Common.Interfaces.Repositories;
 using Blog.Domain.Entities;
@@ -18,6 +19,9 @@ public sealed class AddCommunityRequestCommandHandler : IRequestHandler<AddCommu
     {
         var community = await _communityRepository.GetByIdIncludingRequestsAndSubscribersAsync(request.CommunityId); 
         if (community == null) throw new NotFoundException(nameof(Community), request.CommunityId);
+
+        if (community.IsClosed == false)
+            throw new PublicCommunityException(request.CommunityId);
         
         if (community.Subscribers?.Any(subscriber => subscriber.Id == request.UserId) ?? true)
             throw new BadRequestException(
