@@ -27,13 +27,13 @@ internal sealed class AuthService : IAuthService
 
     public async Task<bool> IsRevoked(string token)
     {
-        var tokenId = _jwtProvider.GetIdFromToken(token);
+        var tokenId = _jwtProvider.GetTokenId(token);
         return await _cache.GetStringAsync(BlacklistedKey(tokenId)) != null;
     }
 
     public async Task LogOut(string token)
     {
-        var tokenId = _jwtProvider.GetIdFromToken(token);
+        var tokenId = _jwtProvider.GetTokenId(token);
         var expiration = _jwtProvider.GetExpiration(token);
         
         await _cache.SetStringAsync(BlacklistedKey(tokenId), "revoked", new DistributedCacheEntryOptions

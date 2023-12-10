@@ -24,10 +24,10 @@ internal sealed class JwtProvider
         return securityToken?.ValidTo ?? DateTime.UtcNow.AddMinutes(_jwtOptions.LifeTimeInMinutes);
     }
     
-    public string GetIdFromToken(string accessToken)
+    public string GetTokenId(string accessToken)
     {
-        var jsonToken = _tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
-        var tokenId = jsonToken?.Payload[JwtRegisteredClaimNames.Jti]?.ToString();
+        var securityToken = _tokenHandler.ReadToken(accessToken) as JwtSecurityToken;
+        var tokenId = securityToken?.Payload[JwtRegisteredClaimNames.Jti]?.ToString();
         
         return tokenId ?? "";
     }
