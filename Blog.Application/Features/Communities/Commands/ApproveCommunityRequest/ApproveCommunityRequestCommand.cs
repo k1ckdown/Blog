@@ -1,6 +1,6 @@
-using MediatR;
+using Blog.Application.Features.Base.CommunityRequest;
 
 namespace Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 
-public sealed record ApproveCommunityRequestCommand(Guid UserId, Guid CommunityId, Guid ApplicantId)
-    : IRequest;
+public record ApproveCommunityRequestCommand(Guid UserId, Guid CommunityId, Guid ApplicantId) 
+    : BaseCommunityRequestCommand(UserId, CommunityId, ApplicantId);
