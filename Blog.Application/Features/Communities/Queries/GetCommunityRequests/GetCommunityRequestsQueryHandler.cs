@@ -29,8 +29,7 @@ public sealed class GetCommunityRequestsQueryHandler
             throw new PublicCommunityException(request.CommunityId);
 
         if (community.Administrators?.All(admin => admin.Id != request.UserId) ?? true)
-            throw new ForbiddenException(
-                $"Access is forbidden for user ({request.UserId}). Community requests are available only to administrators");
+            throw new ForbiddenException(request.UserId);
 
         var communityRequests = community.Requests?
             .Select(communityRequest => _mapper.Map<CommunityRequestDto>(communityRequest));

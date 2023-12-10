@@ -1,6 +1,7 @@
 using Blog.Application.DTOs.Communities;
 using Blog.Application.DTOs.Posts;
 using Blog.Application.Features.Communities.Commands.AddCommunityRequest;
+using Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 using Blog.Application.Features.Communities.Commands.CreateCommunityPost;
 using Blog.Application.Features.Communities.Commands.SubscribeToCommunity;
 using Blog.Application.Features.Communities.Commands.UnsubscribeFromCommunity;
@@ -116,6 +117,16 @@ public sealed class CommunityController : BaseController
     {
         var addCommunityRequestCommand = new AddCommunityRequestCommand(UserId, id);
         await Mediator.Send(addCommunityRequestCommand);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{communityId:guid}/approve/{applicantId:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> ApproveRequest(Guid communityId, Guid applicantId)
+    {
+        var approveCommunityRequestCommand = new ApproveCommunityRequestCommand(UserId, communityId, applicantId);
+        await Mediator.Send(approveCommunityRequestCommand);
         return Ok();
     }
 }
