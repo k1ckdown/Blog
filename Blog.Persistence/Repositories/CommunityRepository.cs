@@ -12,20 +12,34 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
     public IQueryable<Subscription> Subscriptions => DbContext.Subscriptions;
     public IQueryable<CommunityAdmin> Administrators => DbContext.CommunityAdmins;
 
-    public async Task<Subscription?> GetSubscriptionAsync(Guid userId, Guid communityId) =>
-        await DbContext.Subscriptions.FindAsync(userId, communityId);
-
     public async Task AddSubscriptionAsync(Subscription subscription)
     {
         await DbContext.Subscriptions.AddAsync(subscription);
         await DbContext.SaveChangesAsync();
     }
-
-    public async Task DeleteSubscriptionAsync(Subscription subscription)
-    { 
-        DbContext.Subscriptions.Remove(subscription);
-        await DbContext.SaveChangesAsync();
-    }
+    
+    public async Task<Community?> GetByIdIncludingRequests(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Requests)!
+            .FirstOrDefaultAsync(community => community.Id == id);
+    
+    public async Task<Community?> GetByIdIncludingSubscribersAsync(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Subscribers)
+            .FirstOrDefaultAsync(community => community.Id == id);
+    
+    public async Task<Community?> GetByIdIncludingRequestsAndAdminsAsync(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Administrators)
+            .Include(community => community.Requests)!
+            .ThenInclude(request => request.User)
+            .FirstOrDefaultAsync(community => community.Id == id);
+    
+    public async Task<Community?> GetByIdIncludingRequestsAndSubscribersAsync(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Subscribers)
+            .Include(community => community.Requests)
+            .FirstOrDefaultAsync(community => community.Id == id);
     
     public async Task<Community?> GetByIdIncludingAllMembersAsync(Guid id) =>
         await DbContext.Communities

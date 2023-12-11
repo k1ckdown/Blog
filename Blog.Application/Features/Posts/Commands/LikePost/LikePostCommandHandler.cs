@@ -21,16 +21,18 @@ public sealed class LikePostCommandHandler : IRequestHandler<LikePostCommand>
 
     public async Task Handle(LikePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _postRepository.GetByIdAsync(request.PostId);
+        var post = await _postRepository.GetByIdIncludingLikes(request.PostId);
         if (post == null) throw new NotFoundException(nameof(Post), request.PostId);
 
         await _communityAccessService.CheckAccessToPost(request.UserId, post);
         
-        if (await _postRepository.GetLikeAsync(request.UserId, request.PostId) != null)
+        if (post.Likes.Any(like => like.UserId == request.UserId))
             throw new BadRequestException(
                 $"The user ({request.UserId}) already has a like on the post ({request.PostId})");
 
         var like = new Like { UserId = request.UserId, PostId = request.PostId };
-        await _postRepository.AddLikeAsync(like);
+        post.Likes.Add(like);
+        
+        await _postRepository.UpdateAsync(post);
     }
 }

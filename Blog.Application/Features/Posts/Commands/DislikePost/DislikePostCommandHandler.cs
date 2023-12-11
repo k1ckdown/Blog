@@ -21,16 +21,17 @@ public sealed class DislikePostCommandHandler : IRequestHandler<DislikePostComma
 
     public async Task Handle(DislikePostCommand request, CancellationToken cancellationToken)
     {
-        var post = await _postRepository.GetByIdAsync(request.PostId);
+        var post = await _postRepository.GetByIdIncludingLikes(request.PostId);
         if (post == null) throw new NotFoundException(nameof(Post), request.PostId);
         
         await _communityAccessService.CheckAccessToPost(request.UserId, post);
-        
-        var like = await _postRepository.GetLikeAsync(request.UserId, request.PostId);
+
+        var like = post.Likes.FirstOrDefault(like => like.UserId == request.UserId);
         if (like == null)
             throw new NotFoundException(
                 $"The user ({request.UserId}) doesn't have like on the post ({request.PostId})");
 
-        await _postRepository.DeleteLikeAsync(like);
+        post.Likes.Remove(like);
+        await _postRepository.UpdateAsync(post);
     }
 }

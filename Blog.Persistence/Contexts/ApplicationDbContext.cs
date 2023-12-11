@@ -8,9 +8,12 @@ public sealed class ApplicationDbContext : DbContext
 {
     public DbSet<Tag> Tags { get; set; } = null!;
     public DbSet<Like> Likes { get; set; } = null!;
-    public DbSet<Comment> Comments { get; set; } = null!;
+    
     public DbSet<Subscription> Subscriptions { get; set; } = null!;
     public DbSet<CommunityAdmin> CommunityAdmins { get; set; } = null!;
+
+    public DbSet<Comment> Comments { get; set; } = null!;
+    public DbSet<CommunityRequest> CommunityRequests { get; set; } = null!;
     
     public DbSet<Post> Posts { get; set; } = null!;
     public DbSet<User> Users { get; set; } = null!;
@@ -28,5 +31,6 @@ public sealed class ApplicationDbContext : DbContext
         builder.ApplyConfiguration(new SubscriptionConfiguration());
         builder.ApplyConfiguration(new CommunityConfiguration());
         builder.ApplyConfiguration(new CommunityAdminConfiguration());
+        builder.ApplyConfiguration(new CommunityRequestConfiguration());
     }
 }
