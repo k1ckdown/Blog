@@ -1,6 +1,6 @@
-using Blog.Application.Features.Base.CommunityRequest;
+using Blog.Application.Features.Base.ConsiderCommunityRequest;
 
 namespace Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 
 public record ApproveCommunityRequestCommand(Guid UserId, Guid CommunityId, Guid ApplicantId) 
-    : BaseCommunityRequestCommand(UserId, CommunityId, ApplicantId);
+    : BaseConsiderCommunityRequestCommand(UserId, CommunityId, ApplicantId);

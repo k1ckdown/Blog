@@ -1,11 +1,11 @@
 using Blog.Application.Common.Interfaces.Repositories;
-using Blog.Application.Features.Base.CommunityRequest;
+using Blog.Application.Features.Base.ConsiderCommunityRequest;
 using Blog.Domain.Entities;
 
 namespace Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 
 public sealed class ApproveCommunityRequestCommandHandler
-    : BaseCommunityRequestCommandHandler<ApproveCommunityRequestCommand>
+    : BaseConsiderCommunityRequestCommandHandler<ApproveCommunityRequestCommand>
 {
     public ApproveCommunityRequestCommandHandler(ICommunityRepository communityRepository) : base(communityRepository)
     {

@@ -3,14 +3,14 @@ using Blog.Application.Common.Interfaces.Repositories;
 using Blog.Domain.Entities;
 using MediatR;
 
-namespace Blog.Application.Features.Base.CommunityRequest;
+namespace Blog.Application.Features.Base.ConsiderCommunityRequest;
 
-public class BaseCommunityRequestCommandHandler<TRequest> 
-    : IRequestHandler<TRequest> where TRequest : BaseCommunityRequestCommand
+public class BaseConsiderCommunityRequestCommandHandler<TRequest> 
+    : IRequestHandler<TRequest> where TRequest : BaseConsiderCommunityRequestCommand
 {
     protected readonly ICommunityRepository CommunityRepository;
 
-    protected BaseCommunityRequestCommandHandler(ICommunityRepository communityRepository) =>
+    protected BaseConsiderCommunityRequestCommandHandler(ICommunityRepository communityRepository) =>
         CommunityRepository = communityRepository;
     
     public virtual async Task Handle(TRequest request, CancellationToken cancellationToken)
