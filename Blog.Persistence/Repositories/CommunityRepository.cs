@@ -18,6 +18,16 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
         await DbContext.SaveChangesAsync();
     }
     
+    public async Task<Community?> GetByIdIncludingRequests(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Requests)!
+            .FirstOrDefaultAsync(community => community.Id == id);
+    
+    public async Task<Community?> GetByIdIncludingSubscribersAsync(Guid id) =>
+        await DbContext.Communities
+            .Include(community => community.Subscribers)
+            .FirstOrDefaultAsync(community => community.Id == id);
+    
     public async Task<Community?> GetByIdIncludingRequestsAndAdminsAsync(Guid id) =>
         await DbContext.Communities
             .Include(community => community.Administrators)
@@ -29,11 +39,6 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
         await DbContext.Communities
             .Include(community => community.Subscribers)
             .Include(community => community.Requests)
-            .FirstOrDefaultAsync(community => community.Id == id);
-
-    public async Task<Community?> GetByIdIncludingSubscribersAsync(Guid id) =>
-        await DbContext.Communities
-            .Include(community => community.Subscribers)
             .FirstOrDefaultAsync(community => community.Id == id);
     
     public async Task<Community?> GetByIdIncludingAllMembersAsync(Guid id) =>

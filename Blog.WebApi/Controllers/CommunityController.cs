@@ -3,6 +3,7 @@ using Blog.Application.DTOs.Posts;
 using Blog.Application.Features.Communities.Commands.AddCommunityRequest;
 using Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 using Blog.Application.Features.Communities.Commands.CreateCommunityPost;
+using Blog.Application.Features.Communities.Commands.DeleteCommunityRequest;
 using Blog.Application.Features.Communities.Commands.RejectCommunityRequest;
 using Blog.Application.Features.Communities.Commands.SubscribeToCommunity;
 using Blog.Application.Features.Communities.Commands.UnsubscribeFromCommunity;
@@ -118,6 +119,16 @@ public sealed class CommunityController : BaseController
     {
         var addCommunityRequestCommand = new AddCommunityRequestCommand(UserId, id);
         await Mediator.Send(addCommunityRequestCommand);
+        return Ok();
+    }
+    
+    [HttpDelete]
+    [Route("{id:guid}/request")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> DeleteRequest(Guid id)
+    {
+        var deleteCommunityRequestCommand = new DeleteCommunityRequestCommand(UserId, id);
+        await Mediator.Send(deleteCommunityRequestCommand);
         return Ok();
     }
 

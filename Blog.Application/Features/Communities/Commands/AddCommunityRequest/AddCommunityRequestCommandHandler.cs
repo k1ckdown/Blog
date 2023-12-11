@@ -10,11 +10,9 @@ public sealed class AddCommunityRequestCommandHandler : IRequestHandler<AddCommu
 {
     private readonly ICommunityRepository _communityRepository;
 
-    public AddCommunityRequestCommandHandler(ICommunityRepository communityRepository) 
-    {
+    public AddCommunityRequestCommandHandler(ICommunityRepository communityRepository)  => 
         _communityRepository = communityRepository;
-    }
-        
+    
     public async Task Handle(AddCommunityRequestCommand request, CancellationToken cancellationToken)
     {
         var community = await _communityRepository.GetByIdIncludingRequestsAndSubscribersAsync(request.CommunityId); 

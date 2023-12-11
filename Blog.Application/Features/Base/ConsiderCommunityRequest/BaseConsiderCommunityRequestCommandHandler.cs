@@ -1,3 +1,4 @@
+using Blog.Application.Common.Exceptions;
 using Blog.Application.Common.Exceptions.Base;
 using Blog.Application.Common.Interfaces.Repositories;
 using Blog.Domain.Entities;
@@ -25,8 +26,7 @@ public class BaseConsiderCommunityRequestCommandHandler<TRequest>
             .FirstOrDefault(existingRequest => existingRequest.UserId == request.ApplicantId);
 
         if (communityRequest == null)
-            throw new NotFoundException(
-                $"The user's ({request.ApplicantId}) request to join the community ({request.CommunityId}) was not found");
+            throw new CommunityRequestNotFoundException(request.ApplicantId, request.CommunityId);
         
         community.Requests?.Remove(communityRequest);
         await CommunityRepository.UpdateAsync(community);
