@@ -8,7 +8,6 @@ public sealed class SubscriptionConfiguration : IEntityTypeConfiguration<Subscri
 {
     public void Configure(EntityTypeBuilder<Subscription> builder)
     {
-        builder
-            .HasKey(subscription => new { subscription.UserId, subscription.CommunityId });
+        builder.HasKey(subscription => new { subscription.UserId, subscription.CommunityId });
     }
 }

@@ -16,17 +16,15 @@ public sealed class UnsubscribeFromCommunityCommandHandler : IRequestHandler<Uns
 
     public async Task Handle(UnsubscribeFromCommunityCommand request, CancellationToken cancellationToken)
     {
-        if (await _communityRepository.Entities.AllAsync(
-                community => community.Id != request.CommunityId,
-                cancellationToken: cancellationToken))
-            throw new NotFoundException(nameof(Community), request.CommunityId);
+        var community = await _communityRepository.GetByIdIncludingSubscribersAsync(request.CommunityId);
+        if (community == null) throw new NotFoundException(nameof(Community), request.CommunityId);
 
-        var subscribe = await _communityRepository.GetSubscriptionAsync(request.UserId, request.CommunityId);
-
-        if (subscribe == null)
+        var subscriber = community.Subscribers?.FirstOrDefault(subscriber => subscriber.Id == request.UserId);
+        if (subscriber == null)
             throw new NotFoundException(
                 $"The user ({request.UserId}) is not subscribed to the community ({request.CommunityId})");
 
-        await _communityRepository.DeleteSubscriptionAsync(subscribe);
+        community.Subscribers?.Remove(subscriber);
+        await _communityRepository.UpdateAsync(community);
     }
 }

@@ -1,11 +1,16 @@
 using Blog.Application.DTOs.Communities;
 using Blog.Application.DTOs.Posts;
+using Blog.Application.Features.Communities.Commands.AddCommunityRequest;
+using Blog.Application.Features.Communities.Commands.ApproveCommunityRequest;
 using Blog.Application.Features.Communities.Commands.CreateCommunityPost;
+using Blog.Application.Features.Communities.Commands.DeleteCommunityRequest;
+using Blog.Application.Features.Communities.Commands.RejectCommunityRequest;
 using Blog.Application.Features.Communities.Commands.SubscribeToCommunity;
 using Blog.Application.Features.Communities.Commands.UnsubscribeFromCommunity;
 using Blog.Application.Features.Communities.Queries.GetCommunity;
 using Blog.Application.Features.Communities.Queries.GetCommunityList;
 using Blog.Application.Features.Communities.Queries.GetCommunityPostList;
+using Blog.Application.Features.Communities.Queries.GetCommunityRequests;
 using Blog.Application.Features.Communities.Queries.GetGreatestUserRoleInCommunity;
 using Blog.Application.Features.Communities.Queries.GetUserCommunities;
 using Blog.Domain.Entities;
@@ -94,6 +99,56 @@ public sealed class CommunityController : BaseController
     {
         var unsubscribeFromCommunityCommand = new UnsubscribeFromCommunityCommand(UserId, id);
         await Mediator.Send(unsubscribeFromCommunityCommand);
+        return Ok();
+    }
+
+    [HttpGet]
+    [Route("{id:guid}/request")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<ActionResult<IEnumerable<CommunityRequestDto>>> GetRequestList(Guid id)
+    {
+        var getCommunityRequestsQuery = new GetCommunityRequestsQuery(UserId, id);
+        var requests = await Mediator.Send(getCommunityRequestsQuery);
+        return Ok(requests);
+    }
+
+    [HttpPost]
+    [Route("{id:guid}/request")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> AddRequest(Guid id)
+    {
+        var addCommunityRequestCommand = new AddCommunityRequestCommand(UserId, id);
+        await Mediator.Send(addCommunityRequestCommand);
+        return Ok();
+    }
+    
+    [HttpDelete]
+    [Route("{id:guid}/request")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> DeleteRequest(Guid id)
+    {
+        var deleteCommunityRequestCommand = new DeleteCommunityRequestCommand(UserId, id);
+        await Mediator.Send(deleteCommunityRequestCommand);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{communityId:guid}/approve/{applicantId:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> ApproveRequest(Guid communityId, Guid applicantId)
+    {
+        var approveCommunityRequestCommand = new ApproveCommunityRequestCommand(UserId, communityId, applicantId);
+        await Mediator.Send(approveCommunityRequestCommand);
+        return Ok();
+    }
+    
+    [HttpPost]
+    [Route("{communityId:guid}/reject/{applicantId:guid}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public async Task<IActionResult> RejectRequest(Guid communityId, Guid applicantId)
+    {
+        var rejectCommunityRequestCommand = new RejectCommunityRequestCommand(UserId, communityId, applicantId);
+        await Mediator.Send(rejectCommunityRequestCommand);
         return Ok();
     }
 }

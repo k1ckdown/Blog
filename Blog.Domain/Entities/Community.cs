@@ -11,4 +11,5 @@ public sealed class Community : BaseEntity
     
     public IList<User>? Subscribers { get; set; }
     public IList<User>? Administrators { get; set; }
+    public IList<CommunityRequest>? Requests { get; set; }
 }
