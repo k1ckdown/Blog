@@ -1,5 +1,5 @@
 using Blog.Application.DTOs.Account;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs.Tokens;
 using MediatR;
 
 namespace Blog.Application.Features.Account.Commands.Login;
