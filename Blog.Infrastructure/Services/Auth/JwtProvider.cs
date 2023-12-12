@@ -4,10 +4,11 @@ using System.Text;
 using Blog.Application.Common.Exceptions;
 using Blog.Application.Wrappers;
 using Blog.Domain.Entities;
+using Blog.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Blog.Infrastructure.Authentication;
+namespace Blog.Infrastructure.Services.Auth;
 
 internal sealed class JwtProvider
 {

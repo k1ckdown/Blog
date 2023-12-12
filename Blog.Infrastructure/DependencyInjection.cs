@@ -1,8 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Blog.Application.Common.Interfaces.Services;
-using Blog.Infrastructure.Authentication;
-using Blog.Infrastructure.Authentication.ConfigureOptions;
-using Blog.Infrastructure.Services;
+using Blog.Infrastructure.Options.ConfigureOptions;
+using Blog.Infrastructure.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

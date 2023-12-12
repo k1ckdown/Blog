@@ -6,11 +6,10 @@ using Blog.Application.Common.Interfaces.Services;
 using Blog.Application.DTOs.Account;
 using Blog.Application.Wrappers;
 using Blog.Domain.Entities;
-using Blog.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace Blog.Infrastructure.Services;
+namespace Blog.Infrastructure.Services.Auth;
 
 internal sealed class AuthService : IAuthService
 {
