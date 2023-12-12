@@ -18,8 +18,7 @@ public sealed class SearchAddressQueryHandler : IRequestHandler<SearchAddressQue
         _addressRepository = addressRepository;
     }
 
-    public async Task<IEnumerable<SearchAddressModel>> Handle(SearchAddressQuery request,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<SearchAddressModel>> Handle(SearchAddressQuery request, CancellationToken cancellationToken)
     {
         var query = request.Query?.ToLower();
         var hierarchies = _addressRepository.Hierarchies

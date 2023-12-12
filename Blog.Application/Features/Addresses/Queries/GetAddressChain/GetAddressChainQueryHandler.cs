@@ -17,20 +17,14 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
         _addressRepository = addressRepository;
     }
 
-    public async Task<IEnumerable<SearchAddressModel>> Handle(
-        GetAddressChainQuery request,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<SearchAddressModel>> Handle(GetAddressChainQuery request, CancellationToken cancellationToken)
     {
-        long objectId;
         SearchAddressModel lastAddress;
-        
-        var result = new List<SearchAddressModel>();
         var notFoundPath = new NotFoundException($"Address path for object ({request.ObjectGuid}) not found");
 
         var house = await _addressRepository.GetHouseAsync(request.ObjectGuid);
         if (house != null)
         {
-            objectId = house.ObjectId;
             lastAddress = _mapper.Map<SearchAddressModel>(house);
         }
         else
@@ -38,17 +32,19 @@ public sealed class GetAddressChainQueryHandler : IRequestHandler<GetAddressChai
             var addressElement = await _addressRepository.GetAddressElementAsync(request.ObjectGuid);
             if (addressElement == null) throw notFoundPath;
 
-            objectId = addressElement.ObjectId;
             lastAddress = _mapper.Map<SearchAddressModel>(addressElement);
         }
-
+        
+        var objectId = lastAddress.ObjectId;
         var path = await _addressRepository.GetPathAsync(objectId);
         if (path == null) throw notFoundPath;
 
         var pathItems = path.Split(".").ToList();
         pathItems.RemoveAt(pathItems.Count - 1);
 
+        var result = new List<SearchAddressModel>();
         var objectIdentifiers = pathItems.Select(item => Convert.ToInt64(item));
+        
         foreach (var id in objectIdentifiers)
         {
             var addressElement = await _addressRepository.GetAddressElementAsync(id);
