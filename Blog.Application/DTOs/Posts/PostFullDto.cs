@@ -10,6 +10,8 @@ public sealed class PostFullDto : PostDto
 
     public override void Mapping(Profile profile)
     {
-        profile.CreateMap<Post, PostFullDto>();
+        profile.CreateMap<Post, PostFullDto>()
+            .ForMember(dest => dest.Comments,
+                opt => opt.MapFrom(src => src.Comments.Where(comment => comment.ParentId == null)));
     }
 }
