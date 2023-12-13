@@ -4,6 +4,7 @@ using Blog.Application.Features.Posts.Commands.CreatePost;
 using Blog.Application.Features.Posts.Commands.DeleteFavoritePost;
 using Blog.Application.Features.Posts.Commands.DislikePost;
 using Blog.Application.Features.Posts.Commands.LikePost;
+using Blog.Application.Features.Posts.Queries.GetFavoritePosts;
 using Blog.Application.Features.Posts.Queries.GetPost;
 using Blog.Application.Features.Posts.Queries.GetPostList;
 using MediatR;
@@ -60,6 +61,15 @@ public sealed class PostController : BaseController
         var dislikePostCommand = new DislikePostCommand(UserId, postId);
         await Mediator.Send(dislikePostCommand);
         return Ok();
+    }
+    
+    [HttpGet]
+    [Route("favorites")]
+    public async Task<ActionResult<IEnumerable<PostDto>>> GetFavoritePosts()
+    {
+        var getFavoritePostsQuery = new GetFavoritePostsQuery(UserId);
+        var posts = await Mediator.Send(getFavoritePostsQuery);
+        return Ok(posts);
     }
 
     [HttpPost]

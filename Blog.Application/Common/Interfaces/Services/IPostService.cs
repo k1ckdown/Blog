@@ -10,5 +10,6 @@ public interface IPostService
     IQueryable<Post> FilterByMaxReadingTime(IQueryable<Post> posts, int maxTime);
     IQueryable<Post> FilterByTags(IQueryable<Post> posts, IList<Guid> tagIdentifiers);
     IQueryable<Post> Sort(IQueryable<Post> posts, PostSorting? sortingType);
+    List<PostDto> ToListDto(Guid userId, List<Post> posts);
     Task<PostPagedListDto> ToPagedList(IQueryable<Post> posts, int page, int size, Guid userId);
 }
