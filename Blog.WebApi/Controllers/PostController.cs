@@ -1,6 +1,7 @@
 using Blog.Application.DTOs.Posts;
 using Blog.Application.Features.Posts.Commands.AddFavoritePost;
 using Blog.Application.Features.Posts.Commands.CreatePost;
+using Blog.Application.Features.Posts.Commands.DeleteFavoritePost;
 using Blog.Application.Features.Posts.Commands.DislikePost;
 using Blog.Application.Features.Posts.Commands.LikePost;
 using Blog.Application.Features.Posts.Queries.GetPost;
@@ -67,6 +68,15 @@ public sealed class PostController : BaseController
     {
         var addFavoritePostCommand = new AddFavoritePostCommand(UserId, id);
         await Mediator.Send(addFavoritePostCommand);
+        return Ok();
+    }
+    
+    [HttpDelete]
+    [Route("{id:guid}/favorite")]
+    public async Task<IActionResult> DeleteFavorite(Guid id)
+    {
+        var deleteFavoritePostCommand = new DeleteFavoritePostCommand(UserId, id);
+        await Mediator.Send(deleteFavoritePostCommand);
         return Ok();
     }
 }

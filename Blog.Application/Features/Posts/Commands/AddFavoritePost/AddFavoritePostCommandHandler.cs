@@ -11,7 +11,6 @@ public sealed class AddFavoritePostCommandHandler : IRequestHandler<AddFavoriteP
     private readonly IPostRepository _postRepository;
     private readonly ICommunityAccessService _communityAccessService;
 
-
     public AddFavoritePostCommandHandler(IPostRepository postRepository, ICommunityAccessService communityAccessService)
     {
         _postRepository = postRepository;
