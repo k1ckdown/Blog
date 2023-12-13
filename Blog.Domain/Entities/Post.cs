@@ -13,6 +13,7 @@ public sealed class Post : BaseEntity
     public IList<Tag> Tags { get; set; }
     public IList<Like> Likes { get; set; }
     public IList<Comment> Comments { get; set; }
+    public  IList<User> FavoriteByUsers { get; set; }
     
     public User User { get; set;  }
     public required Guid UserId { get; set; }
