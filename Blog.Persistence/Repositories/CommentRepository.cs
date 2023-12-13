@@ -10,12 +10,12 @@ public sealed class CommentRepository : Repository<Comment>, ICommentRepository
    public CommentRepository(ApplicationDbContext dbContext) : base(dbContext) {}
 
    public async Task<Comment?> GetByIdIncludingSubCommentsAsync(Guid id) =>
-       await DbContext.Comments
+       await Entities
            .Include(comment => comment.SubComments)
            .FirstOrDefaultAsync(comment => comment.Id == id);
    
    public async Task<Comment?> GetByIdIncludingAllAsync(Guid id) =>
-       await DbContext.Comments
+       await Entities
            .Include(comment => comment.User)
            .Include(comment => comment.SubComments)
            .FirstOrDefaultAsync(comment => comment.Id == id);

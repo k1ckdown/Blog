@@ -1,5 +1,5 @@
 using Blog.Application.Common.Interfaces.Services;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs.Tokens;
 using Blog.Domain.Entities;
 using MediatR;
 

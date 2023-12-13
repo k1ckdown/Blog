@@ -2,12 +2,13 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Blog.Application.Common.Exceptions;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs.Tokens;
 using Blog.Domain.Entities;
+using Blog.Infrastructure.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Blog.Infrastructure.Authentication;
+namespace Blog.Infrastructure.Services.Auth;
 
 internal sealed class JwtProvider
 {
@@ -20,10 +21,10 @@ internal sealed class JwtProvider
         _tokenHandler = tokenHandler;
     }
 
-    public DateTime GetRefreshExpiration(string token)
+    public DateTime GetExpiration(string token)
     {
         var securityToken = _tokenHandler.ReadToken(token) as JwtSecurityToken;
-        return securityToken?.ValidTo ?? DateTime.UtcNow.AddMinutes(_jwtOptions.RefreshLifetimeInDays);
+        return securityToken?.ValidTo ?? DateTime.UtcNow.AddMinutes(_jwtOptions.LifetimeInMinutes);
     }
     
     public string GetSessionId(string token)

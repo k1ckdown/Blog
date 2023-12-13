@@ -1,5 +1,5 @@
 using Blog.Application.DTOs.Account;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs.Tokens;
 using Blog.Domain.Entities;
 
 namespace Blog.Application.Common.Interfaces.Services;

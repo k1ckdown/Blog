@@ -1,4 +1,4 @@
-namespace Blog.Application.Wrappers;
+namespace Blog.Application.DTOs.Tokens;
 
 public sealed record TokenResponse(
     string AccessToken, 

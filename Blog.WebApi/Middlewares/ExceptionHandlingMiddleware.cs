@@ -2,7 +2,7 @@ using System.Net;
 using System.Security.Authentication;
 using System.Text.Json;
 using Blog.Application.Common.Exceptions.Base;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs;
 
 namespace Blog.WebApi.Middlewares;
 

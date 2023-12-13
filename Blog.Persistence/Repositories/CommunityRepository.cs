@@ -18,31 +18,31 @@ public sealed class CommunityRepository : Repository<Community>, ICommunityRepos
         await DbContext.SaveChangesAsync();
     }
     
-    public async Task<Community?> GetByIdIncludingRequests(Guid id) =>
-        await DbContext.Communities
+    public async Task<Community?> GetByIdIncludingRequests(Guid id) => 
+        await Entities
             .Include(community => community.Requests)!
             .FirstOrDefaultAsync(community => community.Id == id);
     
     public async Task<Community?> GetByIdIncludingSubscribersAsync(Guid id) =>
-        await DbContext.Communities
+        await Entities
             .Include(community => community.Subscribers)
             .FirstOrDefaultAsync(community => community.Id == id);
     
     public async Task<Community?> GetByIdIncludingRequestsAndAdminsAsync(Guid id) =>
-        await DbContext.Communities
+        await Entities
             .Include(community => community.Administrators)
             .Include(community => community.Requests)!
             .ThenInclude(request => request.User)
             .FirstOrDefaultAsync(community => community.Id == id);
     
-    public async Task<Community?> GetByIdIncludingRequestsAndSubscribersAsync(Guid id) =>
-        await DbContext.Communities
+    public async Task<Community?> GetByIdIncludingRequestsAndSubscribersAsync(Guid id) => 
+        await Entities
             .Include(community => community.Subscribers)
             .Include(community => community.Requests)
             .FirstOrDefaultAsync(community => community.Id == id);
     
     public async Task<Community?> GetByIdIncludingAllMembersAsync(Guid id) =>
-        await DbContext.Communities
+        await Entities
             .Include(community => community.Administrators)
             .Include(community => community.Subscribers)
             .FirstOrDefaultAsync(community => community.Id == id);

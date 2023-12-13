@@ -1,4 +1,4 @@
-namespace Blog.Infrastructure.Authentication;
+namespace Blog.Infrastructure.Options;
 
 internal sealed class JwtOptions
 {

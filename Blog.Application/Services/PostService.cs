@@ -54,21 +54,23 @@ public sealed class PostService : IPostService
             _ => posts
         };
     
+    public List<PostDto> ToListDto(Guid userId, List<Post> posts)
+    {
+        var postListDto = _mapper.Map<List<PostDto>>(posts);
+        for (var i = 0; i < postListDto.Count; i++)
+            postListDto[i].HasLike = posts[i].Likes.Any(like => like.UserId == userId);
+
+        return postListDto;
+    }
+    
     public async Task<PostPagedListDto> ToPagedList(IQueryable<Post> posts, int page, int size, Guid userId)
     {
         var (pagedPosts, totalPages) = posts.ToPaged(page, size);
         var pagedList = await pagedPosts
-            .Include(post => post.User)
-            .Include(post => post.Tags)
-            .Include(post => post.Likes)
-            .Include(post => post.Comments)
-            .Include(post => post.Community)
+            .IncludeAll()
             .ToListAsync();
 
-        var postListDto = _mapper.Map<List<PostDto>>(pagedList);
-        for (var i = 0; i < postListDto.Count; i++)
-            postListDto[i].HasLike = pagedList[i].Likes.Any(like => like.UserId == userId);
-
+        var postListDto = ToListDto(userId, pagedList);
         var pageInfo = new PageInfoModel
         {
             Size = Math.Min(size, postListDto.Count),

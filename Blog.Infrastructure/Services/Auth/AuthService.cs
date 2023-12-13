@@ -4,13 +4,12 @@ using Blog.Application.Common.Exceptions.Base;
 using Blog.Application.Common.Interfaces.Repositories;
 using Blog.Application.Common.Interfaces.Services;
 using Blog.Application.DTOs.Account;
-using Blog.Application.Wrappers;
+using Blog.Application.DTOs.Tokens;
 using Blog.Domain.Entities;
-using Blog.Infrastructure.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace Blog.Infrastructure.Services;
+namespace Blog.Infrastructure.Services.Auth;
 
 internal sealed class AuthService : IAuthService
 {
@@ -34,7 +33,7 @@ internal sealed class AuthService : IAuthService
     public async Task LogOut(string token)
     {
         var sessionId = _jwtProvider.GetSessionId(token);
-        var expiration = _jwtProvider.GetRefreshExpiration(token);
+        var expiration = _jwtProvider.GetExpiration(token);
 
         await _cache.RemoveAsync(sessionId);
         await _cache.SetStringAsync(BlacklistedKey(sessionId), "revoked", new DistributedCacheEntryOptions
