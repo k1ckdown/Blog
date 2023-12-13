@@ -34,6 +34,12 @@ public sealed class GetPostListQueryHandler : IRequestHandler<GetPostListQuery, 
                            || post.Community.IsClosed == false 
                            || post.Community.Subscribers!.Concat(post.Community.Administrators!)
                                .Any(member => member.Id == request.UserId));
+        
+        if (request.UserId != Guid.Empty && request.Parameters.OnlyMyCommunities)
+            posts = posts.Where(post => post.Community != null
+                                        && post.Community.Administrators!.Concat(post.Community.Subscribers!)
+                                            .Any(member => member.Id == request.UserId));
+        
         posts = _postService.Sort(posts, request.Parameters.Sorting);
 
         return _postService.ToPagedList(posts, request.Parameters.Page, request.Parameters.Size, request.UserId);
