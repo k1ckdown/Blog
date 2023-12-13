@@ -1,4 +1,5 @@
 using Blog.Application.DTOs.Posts;
+using Blog.Application.Features.Posts.Commands.AddFavoritePost;
 using Blog.Application.Features.Posts.Commands.CreatePost;
 using Blog.Application.Features.Posts.Commands.DislikePost;
 using Blog.Application.Features.Posts.Commands.LikePost;
@@ -57,6 +58,15 @@ public sealed class PostController : BaseController
     {
         var dislikePostCommand = new DislikePostCommand(UserId, postId);
         await Mediator.Send(dislikePostCommand);
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{id:guid}/favorite")]
+    public async Task<IActionResult> AddFavorite(Guid id)
+    {
+        var addFavoritePostCommand = new AddFavoritePostCommand(UserId, id);
+        await Mediator.Send(addFavoritePostCommand);
         return Ok();
     }
 }
