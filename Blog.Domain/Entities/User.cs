@@ -13,6 +13,7 @@ public sealed class User : BaseEntity
     public string? PhoneNumber { get; set; }
 
     public IList<Post> Posts { get; set; }
+    public IList<Post> FavoritePosts { get; set; }
     public IList<Community> Subscriptions { get; set; }
     public IList<Community> AdministeredCommunities { get; set; }
 }
