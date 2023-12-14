@@ -1,5 +1,3 @@
-using Blog.Application.Common.Exceptions;
-using Blog.Application.Services.Communities;
 using Blog.Application.Common.Exceptions.Base;
 using Blog.Application.Common.Interfaces.Repositories;
 using Blog.Application.Common.Interfaces.Services;
@@ -41,7 +39,7 @@ public sealed class CreateCommentCommandHandler : IRequestHandler<CreateCommentC
             if (parentComment == null)
                 throw new NotFoundException(nameof(Comment), parentId);
 
-            if (post.Comments.All(comment => comment.Id != parentId))
+            if (request.PostId != parentComment.PostId)
                 throw new BadRequestException(
                     $"Incorrect combination between post ({request.PostId}) and parent comment ({parentId})");
         }
