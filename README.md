@@ -20,15 +20,16 @@
   - Getting nested comments
   - Creating/Editing/Deleting
 - Account
-  - Editing profile
   - Refresh token
+  - Editing/Getting profile
   - Authentication/Authorization/Registration
 - Posts
-  - Favorites
-  - Creating/Deleting
+  - Creating/Getting
   - Filtering/Sorting
   - Adding/Deleting likes
+  - Adding/Deleting/Getting favorites
 - Communities
+  - Getting
   - Creating/Getting posts
   - Getting user communities
   - Getting greatest user role
