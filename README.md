@@ -25,9 +25,9 @@
   - Authentication/Authorization/Registration
 - Posts
   - Favorites
-  - Like/Dislike
   - Creating/Deleting
   - Filtering/Sorting
+  - Adding/Deleting likes
 - Communities
   - Getting posts
   - Getting requests
