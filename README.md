@@ -14,11 +14,11 @@
 - Tags
 - Authors
 - Addresses
-    - Search
-    - Getting chain
+  - Search
+  - Getting chain
 - Comments
-    - Getting nested comments
-    - Creating/Editing/Deleting
+  - Getting nested comments
+  - Creating/Editing/Deleting
 - Account
   - Editing profile
   - Refresh token
@@ -29,8 +29,7 @@
   - Filtering/Sorting
   - Adding/Deleting likes
 - Communities
-  - Getting posts
-  - Getting requests
+  - Creating/Getting posts
   - Getting user communities
   - Getting greatest user role
-  - Adding/Deleting/Approving/Rejecting requests
+  - Adding/Deleting/Approving/Rejecting/Getting requests
